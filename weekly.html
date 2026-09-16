@@ -42,7 +42,7 @@
       stat card 1                icon-threats.png         16x16   threat detections
       stat card 2                icon-domains.png         16x16   malicious domains
       stat card 3                icon-devices.png         16x16   devices on network
-      trend up (cards 1 + 3)     icon-red-up.png          12x12   #EE0004
+      trend up (card 3)          icon-red-up.png          12x12   #EE0004
       trend down (card 2)        icon-green-down.png      12x12   #04C023
       takeaway "action required" icon-action.png          21x21   #EE0004 triangle
       takeaway "watch item"      icon-watch.png           21x21   #EBB000 circle
@@ -344,11 +344,13 @@
                                           <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
                                             <tbody>
                                               <tr>
-                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-red-up.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#ee0004;">7%</span></td>
-                                              </tr>
-                                              <tr>
-                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
-                                                  VS PREVIOUS WEEK
+                                                <!-- NEW badge (node 328:458) in place of a trend reading: this metric
+                                                     has no prior week to compare against. The 33px under it holds
+                                                     the block at the 46px the trend pair occupies on the other cards,
+                                                     so the value and label below still land on the design's y=115 and
+                                                     this card stays in step with its neighbours. -->
+                                                <td align="right" style="padding-bottom:33px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; text-transform:uppercase; color:#0563ff; text-align:right;">
+                                                  New
                                                 </td>
                                               </tr>
                                             </tbody>
