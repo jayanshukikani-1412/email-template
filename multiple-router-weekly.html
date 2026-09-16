@@ -1,0 +1,1290 @@
+<!doctype html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <!-- Dark mode. Declaring both schemes tells Apple Mail, iOS Mail and
+       Outlook.com that this email ships its own palette, so they render it as
+       designed rather than recolouring it. Gmail's apps ignore this and invert
+       regardless, which is why the hero and the footer band are flat images:
+       pixels are the one thing an inverting client cannot touch. The @media
+       block below covers the live text that is left. -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>AstraLink Connect — Weekly Report</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <!--
+    ============================================================================
+    MULTI-APPLIANCE WEEKLY REPORT — the fleet variant of weekly.html. Same
+    shell (hero, meta bar, CTA band, footer) as weekly.html and monthly.html;
+    the three middle sections are new:
+
+      Fleet at a glance          three site counters + a 3 x 2 activity grid
+      Key Takeaways              severity bar chart + High / Medium / Low tables
+      Every Appliance at a glance  per-appliance Condition and Security tables
+
+    SIZE — READ BEFORE SENDING. Gmail clips a message body over ~102 KB, hiding
+    everything past the cut behind a "View entire message" link. This file is
+    ~102 KB with two appliances, ~18 KB of it these comments, so it sits right
+    on the line as authored. Send the comment-stripped build (~83 KB); every
+    extra appliance then adds roughly 1.5 KB per table it appears in.
+    Strip PLAIN comments only — the three "[if mso]" / "[if !mso]" conditional
+    blocks are load-bearing markup, and a blanket strip would take the Outlook
+    serif fallback and the font stylesheet link with them.
+
+    IMAGE ASSETS — served from CloudFront, absolute https URLs, so this file is
+    send-ready as it stands. Every src below sits under:
+
+      https://d12sb60thikcyd.cloudfront.net/static-assets/email
+
+    ./assets is the source of these files; ./images holds the SVG sources and
+    the @2x PNGs they were cut from.
+
+      MARKUP                     FILE                          display  notes
+      hero (whole section)       weekly-hero.png               640x313  @4x, text baked in
+      meta bar location          icon-location.png              16x16   #9BC1FF
+      meta bar date              icon-calendar.png              16x16   #9BC1FF
+      activity card 1            icon-threats.png               16x16   threat detections
+      activity card 2            icon-domains.png               16x16   name lookups handled
+      activity card 3            icon-lookups.png              16x16   lookups blocked *NEW*
+      activity card 4            icon-wifi-connected.png       16x16   connections logged *NEW*
+      activity card 5            icon-wifi-disconnected.png    16x16   connections refused *NEW*
+      activity card 6            icon-traffic.png               16x16   total traffic observed
+      trend down (1, 2, 6)       icon-green-down.png            12x12   #04C023
+      trend up (3, 4, 5)         icon-red-up.png                12x12   #EE0004
+      fleet "VIEW FULL REPORT"   icon-right-arrow.png           16x16   #0563FF, on the tinted bar
+      takeaway "VIEW FULL REPORT" icon-right-white-arrow.png          16x16   #FFFFFF, on the solid button *NEW*
+      footer band (whole band)   footer-band.png               640x246  @2x, text baked in
+
+    The four icons marked *NEW* are cut in this template for the first time.
+    They live at ./assets/NAME.png (1x) and ./images/png/NAME@2x.png (2x),
+    with the Figma SVG in ./images. UPLOAD THE FOUR 1x PNGs TO THE CLOUDFRONT
+    PREFIX ABOVE BEFORE SENDING — every other src here is already there.
+
+    NOT USED — logo.png, footer-logo.png, footer-bg.png, icon-devices.png,
+    icon-detenctions.png, icon-round-arrow.png, logo-cta.png, and the three
+    takeaway status icons (icon-action / icon-watch / icon-working) plus
+    icon-gray-right: this layout's Key Takeaways block is a bar chart and three
+    tables, not the status cards weekly.html and monthly.html use.
+
+    weekly-hero.png is 2 MB. It is fetched rather than inlined, so it does not
+    count against the clipping threshold above, but it is still a slow first
+    paint on mobile data. Re-exporting at @2x (1280 x 626) is worth doing.
+
+    No asset needed for the meta bar "|" (a 1px #3782ff cell), the severity bars
+    or pills (flat fills), or the change arrows in the appliance tables (the
+    text glyphs U+25B2 / U+25BC / U+2248, exactly as the design sets them).
+
+    NOTE on icon-green-down.png: Figma exports both arrows as the SAME up-right
+    path and flips the green one in CSS. Email cannot transform images, so the
+    flip is baked into the PNG itself.
+
+    PRE-BLENDED ALPHA. Outlook on Windows drops rgba(), so every translucent
+    fill in the design is committed here as the flat colour it resolves to over
+    its own backdrop:
+
+      rgba(5,99,255,0.10) over #ffffff  -> #e6efff  activity card icon pill
+      rgba(5,99,255,0.12) over #f6f6f6  -> #d9e4f7  fleet "VIEW FULL REPORT" bar
+      rgba(5,99,255,0.24) over #ffffff  -> #c3daff  takeaway button border
+      rgba(0,9,17,0.30)   over #ffffff  -> #b3b5b8  every table column header
+      rgba(238,0,4,0.05)  over #ffffff  -> #fef2f2  High pill
+      rgba(122,89,0,0.05) over #ffffff  -> #f8f7f2  Medium pill
+      rgba(195,147,0,0.05) over #ffffff -> #fcfaf2  Low pill
+      rgba(238,0,4,0.30)  over #ffffff  -> #fab3b4  High bar
+      rgba(122,89,0,0.30) over #ffffff  -> #d7cdb3  Medium bar
+      rgba(195,147,0,0.30) over #ffffff -> #eddfb3  Low bar
+      rgba(255,255,255,0.20) over #0563ff -> #3782ff meta bar rule
+      rgba(5,99,255,0.50) over #eef4ff  -> #7aacff  CTA "Thank you,"
+      rgba(255,255,255,0.70) over #1f1f1f -> #bcbcbc legal strip copy
+    ============================================================================
+  -->
+  <!-- Web fonts. Two sources, because no single one reaches every client:
+
+       1. The <link> below, for clients that will fetch an external stylesheet.
+       2. The @font-face rules at the top of the <style> block, which carry the
+          same face inline.
+
+       The second is what actually delivers Instrument Serif on mobile: a
+       client that strips <link> from the head but keeps <style> - and that is
+       most of them - had nothing left to load the font from, so the meta bar
+       and the sign-off fell back to the browser's default serif. @import is still not used: most
+       clients strip it outright, and it fails even where the rest of the CSS
+       survives.
+
+       Neither source reaches Gmail (webmail and both apps), Outlook on
+       Windows, Yahoo or AOL - those support no web fonts at all and will
+       render the serif in Times New Roman whatever this file does. Baking the type
+       into a PNG is the only way to pin it there, which is what the hero and
+       the footer band already do.
+
+       Inline fallbacks are on every element, so a client that drops both
+       still renders correctly. -->
+  <!--[if !mso]><!-->
+  <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Instrument+Serif:ital@1&display=swap">
+  <!--<![endif]-->
+  <style>
+    /* ------------------------------------------------------------------
+       Instrument Serif Italic, inlined - the same two faces the <link>
+       above fetches, so the font still arrives where <link> is stripped
+       but <style> survives: Apple Mail on macOS and iOS, Outlook for Mac,
+       Samsung Mail, Thunderbird.
+
+       Wrapped in @media screen so the Word engine behind Outlook on
+       Windows, which ignores that block wholesale, never sees rules it
+       cannot use. The faces, their unicode-ranges and the gstatic URLs
+       are Google's own, copied verbatim; those URLs are content-hashed
+       and permanent. The latin rule is last on purpose - a client that
+       does not understand unicode-range takes the last match for every
+       character, and latin is the range this email actually sets. ----- */
+    @media screen {
+      /* latin-ext */
+      @font-face {
+        font-family: 'Instrument Serif';
+        font-style: italic;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjgn7Motmp5r61.woff2) format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Instrument Serif';
+        font-style: italic;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7Motmp5g.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+    }
+
+    /* Same declaration as the meta tags, for clients that read CSS but not
+       <meta>. Belongs first so it applies before anything below. */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+
+    /* Client resets */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; }
+    a { text-decoration: none; }
+
+    /* Mobile stacking */
+    @media only screen and (max-width: 640px) {
+      .full { width: 100% !important; max-width: 100% !important; }
+      .stack { display: block !important; width: 100% !important; }
+      .side-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      /* Meta bar: the location line is 303px of live text and cannot hold one
+         line on a phone, so it is allowed to wrap. It is centred either way. */
+      .meta-loc { white-space: normal !important; }
+      /* Card rows: the horizontal 8px gap becomes a vertical one when stacked */
+      .card-cell { display: block !important; width: 100% !important; padding-left: 0 !important; padding-top: 8px !important; }
+      .card-cell-first { padding-top: 0 !important; }
+      /* ------------------------------------------------------------------
+         Every Appliance at a glance: five columns over a 540px measure do not
+         survive a 320px screen. Rather than scroll the card sideways - which
+         Gmail's apps do not honour - the type drops to 10px, the nowrap comes
+         off so "Bangalore Router[Old]" breaks over two lines, and the columns
+         are re-cut, and the desktop gutter narrows from 26-28px to 6px.
+
+         What actually makes five columns fit is that the metric values break.
+         Each is a number, a space, then a span holding the arrow and its
+         percentage glued with a &nbsp; - so "67.0% ▼ 22%" splits into "67.0%"
+         over "▼ 22%" and the column only has to be as wide as the longer half.
+         Desktop keeps it on one line through the inline white-space:nowrap,
+         which this block lifts. Without that break the five values need 264px
+         of the 268px a 320px screen leaves, and no gutter fits at all.
+
+         The header is a step smaller than the values because "DETECTIONS" is
+         one unbreakable word and sets the floor for its column; at 10px it
+         would not clear the split, and everything else would have to give way
+         to a word nobody reads twice. ------------------------------------- */
+      .ap-pad  { padding-left: 6px !important; padding-right: 6px !important; }
+      .ap-head { font-size: 9px !important; letter-spacing: -0.2px !important; white-space: normal !important; padding-right: 6px !important; }
+      .ap-cell { font-size: 10px !important; letter-spacing: 0 !important; white-space: normal !important; padding-right: 6px !important; }
+      .ap-c1 { width: 23% !important; }
+      .ap-c2 { width: 20% !important; }
+      .ap-c3 { width: 22% !important; }
+      .ap-c4 { width: 17% !important; }
+      .ap-c5 { width: 18% !important; }
+      /* Key Takeaways tables: three columns, so there is room to keep these a
+         step larger than the five-column cards above. The nowrap on the site
+         and appliance columns comes off - "Bangalore Router[Old]" is 113px at
+         12px and would run off the card otherwise - and the reason column,
+         which already wraps, gives up the width. */
+      .tk-head { font-size: 12px !important; letter-spacing: -0.2px !important; white-space: normal !important; padding-right: 8px !important; }
+      .tk-cell { font-size: 11px !important; letter-spacing: 0 !important; white-space: normal !important; padding-right: 8px !important; }
+      .tk-c1 { width: 48% !important; }
+      .tk-c2 { width: 24% !important; }
+      .tk-c3 { width: 28% !important; }
+    }
+
+    /* ------------------------------------------------------------------
+       Dark mode fallback for the legal strip. If a client dims or inverts
+       the palette despite the color-scheme declaration above, the flat
+       #1f1f1f strip flips to near-white while the #bcbcbc copy stays
+       mid-grey, and the line loses most of its contrast. These pin it back
+       to its own colours.
+
+       The blue band above it is not listed here: it has no live text left
+       to recolour, which is the only thing Gmail's forced inversion cannot
+       defeat. The strip keeps its live text because the unsubscribe link
+       has to be real, selectable text.
+
+       !important is what lets these win: a declaration marked important in
+       a stylesheet beats an element's inline style. --------------------- */
+    @media (prefers-color-scheme: dark) {
+      .legal-strip         { background-color: #1f1f1f !important; }
+      .legal-strip td      { color: #bcbcbc !important; }
+      .legal-strip a       { color: #ffffff !important; }
+    }
+
+    /* Outlook for iOS / Android does not use the media query: it rewrites
+       the markup, stamping [data-ogsc] on elements whose text colour it
+       changed and [data-ogsb] on backgrounds. Same rules, its selectors. */
+    [data-ogsb] .legal-strip    { background-color: #1f1f1f !important; }
+    [data-ogsc] .legal-strip td { color: #bcbcbc !important; }
+    [data-ogsc] .legal-strip a  { color: #ffffff !important; }
+  </style>
+
+  <!-- Outlook on Windows cannot have Instrument Serif - the Word engine
+       supports no web font at all. It also does not walk a font stack: it
+       takes the FIRST family named and, when that is missing, drops
+       straight to Times New Roman rather than trying the next entry. Times
+       is what these cells ask for anyway, so Outlook lands on the right
+       face on its own and this block is belt and braces - it names Times
+       outright and re-asserts the italic. Everything else ignores it. -->
+  <!--[if mso]>
+  <style>
+    .serif-i { font-family: 'Times New Roman', Times, serif !important; font-style: italic !important; }
+  </style>
+  <![endif]-->
+</head>
+<body style="margin:0; padding:0; background-color:#e9e9e9;">
+
+  <!-- Preheader (hidden preview text) -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#e9e9e9;">
+    Here's what protected your network this week — every appliance, detected, blocked and monitored.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#e9e9e9;">
+    <tbody>
+      <tr>
+        <td align="center" style="padding:0;">
+
+          <!-- ============ EMAIL CONTAINER (640) ============ -->
+          <table role="presentation" class="full" width="640" cellpadding="0" cellspacing="0" border="0" style="width:640px; max-width:640px; background-color:#ffffff;">
+            <tbody>
+
+              <!-- ============================================================
+                   HERO — a single flat image.
+                   The logo, the heading and the serif sub-heading are all baked
+                   into weekly-hero.png, so there is no live text, no web font
+                   and no VML fallback to keep in sync here. This layout's hero
+                   (node 328:385) is the same artwork and the same copy as the
+                   single-appliance weekly, so the same export is reused. It is
+                   640 x 313 at @4x (2560 x 1252), so it stays sharp on retina.
+                   width:100% + height:auto lets it shrink with the container on
+                   mobile; the width/height attributes hold it at 640 x 313 in
+                   Outlook, which ignores the inline CSS. bgcolor matches the
+                   artwork's top-left so a slow load does not flash white.
+                   The alt text carries the full headline for blocked images.
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#0a1424" style="background-color:#0a1424; padding:0; margin:0; line-height:0; font-size:0;">
+                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/weekly-hero.png" width="640" height="313" alt="AstraLink Connect &mdash; Here&rsquo;s what protected your network this week. A short summary of what we stopped and what we&rsquo;re watching." style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:16px; line-height:22px; color:#ffffff;">
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   META BAR — report type / location / date range
+                   The fleet layout centres all three lines in a single column
+                   (node 328:400) rather than splitting them left and right the
+                   way weekly.html and monthly.html do: the multi-site location
+                   string is far too long to sit beside the report type. Band is
+                   143px: 24 + 28 + 8 + 28 + 8 + 23 + 24.
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#0563ff" align="center" class="side-pad" style="background-color:#0563ff; padding:24px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <!-- Report type -->
+                      <tr>
+                        <td align="center" style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:20px; line-height:28px; letter-spacing:-1px; color:#ffffff;">
+                          Weekly Report
+                        </td>
+                      </tr>
+                      <!-- Location, 8px below -->
+                      <tr>
+                        <td align="center" style="padding-top:8px;">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                            <tbody>
+                              <tr>
+                                <td valign="middle" style="line-height:0;">
+                                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-location.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                </td>
+                                <td class="serif-i meta-loc" valign="middle" style="padding-left:8px; font-family:'Instrument Serif','Times New Roman',serif; font-style:italic; font-size:18px; line-height:28px; letter-spacing:-0.18px; color:#ffffff; white-space:nowrap;">
+                                  Nextechnologies Pvt Ltd Surat &middot; Bengaluru, KA, IN
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <!-- Date range, 8px below -->
+                      <tr>
+                        <td align="center" style="padding-top:8px;">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                            <tbody>
+                              <tr>
+                                <td valign="middle" style="line-height:0;">
+                                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-calendar.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                </td>
+                                <td class="serif-i" valign="middle" style="padding-left:8px; font-family:'Instrument Serif','Times New Roman',serif; font-style:italic; font-size:18px; line-height:23px; color:#ffffff; white-space:nowrap;">
+                                  01 Sep - 08 Sep
+                                </td>
+                                <!-- 1 x 19 rule: white @20% pre-blended over #0563ff -->
+                                <td valign="middle" style="padding:0 6px;">
+                                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                    <tbody><tr>
+                                      <td width="1" bgcolor="#3782ff" style="width:1px; height:19px; background-color:#3782ff; font-size:1px; line-height:19px;">&nbsp;</td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                                <td class="serif-i" valign="middle" style="font-family:'Instrument Serif','Times New Roman',serif; font-style:italic; font-size:18px; line-height:23px; color:#ffffff; white-space:nowrap;">
+                                  2026
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   FLEET AT A GLANCE
+                   Two card blocks and a full-width button, on the same #f6f6f6
+                   band the single-appliance stats sit on (node 328:418).
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#f6f6f6" class="side-pad" style="background-color:#f6f6f6; padding:34px 34px 59px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911; padding-bottom:8px;">
+                          Fleet at a glance
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343; padding-bottom:8px;">
+                          Devices at your sites
+                        </td>
+                      </tr>
+
+                      <!-- Site counters: 185 + (8+186) + (8+185) = 572. Gaps are
+                           cell padding, not empty spacer cells (those collapse in
+                           Outlook). Each card is 98px: 18 + 34 + 14 + 16 + 16. -->
+                      <tr>
+                        <td>
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <tr>
+                                <td class="stack card-cell card-cell-first" width="185" valign="top" style="width:185px;">
+                                  <table role="presentation" class="full" width="185" height="98" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:98px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody><tr>
+                                      <td valign="top" style="padding:18px 16px 16px 16px;">
+                                        <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">2</div>
+                                        <div style="padding-top:14px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Appliances</div>
+                                      </td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                                <td class="stack card-cell" width="186" valign="top" style="width:186px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="186" height="98" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:186px; height:98px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody><tr>
+                                      <td valign="top" style="padding:18px 16px 16px 16px;">
+                                        <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">1</div>
+                                        <div style="padding-top:14px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Looking healthy</div>
+                                      </td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                                <td class="stack card-cell" width="185" valign="top" style="width:185px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="185" height="98" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:98px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody><tr>
+                                      <td valign="top" style="padding:18px 16px 16px 16px;">
+                                        <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">1</div>
+                                        <div style="padding-top:14px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Needing attention</div>
+                                      </td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding-top:16px; padding-bottom:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
+                          Here&rsquo;s your network activity summary for the past seven days
+                        </td>
+                      </tr>
+
+                      <!-- ------------------------------------------------------
+                           Activity grid, 3 x 2. Each card is the same 185 x 197
+                           tile weekly.html and monthly.html use, and the icon
+                           pill, the trend block and the value block keep their
+                           padding chains verbatim.
+
+                           ONE DELIBERATE DIFFERENCE: the label sits 5px under
+                           the value, not the 12px those two files set. At 12px
+                           the content runs to 204px and overflows the 197px
+                           both the design and the height attribute call for -
+                           the trend block is 62px tall, not the 48px the icon
+                           pill alone would be, and the chain never accounted
+                           for that. 5px lands the label on the design's y=149
+                           and the card on its 197. weekly.html and monthly.html
+                           still carry the 12px and still run 7px long per card;
+                           worth backporting.
+
+                           COPY NOTE: the trend caption reads "VS PREVIOUS WEEK"
+                           on all six cards. That is verbatim from the design
+                           (nodes 328:458, 477, 492, 507, 522, 540), which sets
+                           the monthly caption on a weekly report. Swap all six
+                           to "VS PREVIOUS WEEK" once the design is corrected.
+                           ------------------------------------------------------ -->
+                      <tr>
+                        <td>
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <!-- ROW 1 -->
+                              <tr>
+                                <!-- CARD 1 — threat detections -->
+                                <td class="stack card-cell card-cell-first" width="185" valign="top" style="width:185px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <!-- icon pill (x16,y16) + trend block (right, 82px) -->
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-threats.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-green-down.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#04c023;">7%</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS WEEK
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <!-- value + label (x16,y115, 135px measure) -->
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">1,220</div>
+                                          <div style="padding-top:5px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Threat<br>detections</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 2 — name lookups handled -->
+                                <td class="stack card-cell" width="186" valign="top" style="width:186px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="186" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:186px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-domains.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-green-down.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#04c023;">7%</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS WEEK
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">134.8k</div>
+                                          <div style="padding-top:5px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Name lookups<br>handled</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 3 — lookups blocked -->
+                                <td class="stack card-cell" width="185" valign="top" style="width:185px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-lookups.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-red-up.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#ee0004;">7%</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS WEEK
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">7,974</div>
+                                          <div style="padding-top:5px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Lookups<br>blocked</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- ROW 2 — 8px below row 1 -->
+                      <tr>
+                        <td style="padding-top:8px;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <tr>
+                                <!-- CARD 4 — connections logged -->
+                                <td class="stack card-cell card-cell-first" width="185" valign="top" style="width:185px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-wifi-connected.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-red-up.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#ee0004;">7%</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS WEEK
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">1.5M</div>
+                                          <div style="padding-top:5px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Connections<br>logged</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 5 — connections refused -->
+                                <td class="stack card-cell" width="186" valign="top" style="width:186px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="186" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:186px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-wifi-disconnected.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-red-up.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#ee0004;">7%</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS WEEK
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">1.1M</div>
+                                          <div style="padding-top:5px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Connections<br>refused</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 6 — total traffic observed -->
+                                <td class="stack card-cell" width="185" valign="top" style="width:185px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-traffic.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-green-down.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#04c023;">12%</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS WEEK
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">165.72 GB</div>
+                                          <div style="padding-top:5px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Total traffic<br>observed</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- Full-width tinted button, 24px below the grid. 54px from
+                           the padding chain (16 + 22 + 16); an explicit height
+                           would be a content-box height and add the padding on
+                           top of it, so it is deliberately omitted. -->
+                      <tr>
+                        <td style="padding-top:24px;">
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#d9e4f7" style="width:572px; max-width:572px; background-color:#d9e4f7; border-radius:30px;">
+                            <tbody><tr>
+                              <td align="center" valign="middle" style="padding:16px;">
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                  <tbody><tr>
+                                    <td valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap;">
+                                      <a href="#" style="color:#0563ff; text-decoration:none;">VIEW FULL REPORT</a>
+                                    </td>
+                                    <td valign="middle" style="padding-left:8px; line-height:0;">
+                                      <a href="#" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
+                                    </td>
+                                  </tr></tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   KEY TAKEAWAYS
+                   The fleet layout replaces the three status cards of
+                   weekly.html / monthly.html with a severity bar chart and one
+                   bordered table per severity band. Band is white; the section
+                   sits 50px clear of the #f6f6f6 bands above and below it.
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#ffffff" class="side-pad" style="background-color:#ffffff; padding:50px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911;">
+                          Key Takeaways
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:4px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
+                          Appliances that need your attention based on priority
+                        </td>
+                      </tr>
+
+                      <!-- ------------------------------------------------------
+                           Severity bar chart, 203px wide and centred (node
+                           328:744). One 1-row table per band, 7px apart: label
+                           57 / bar column / count, with the bar in its own
+                           fixed-width nested table so the 10px gutters can be
+                           cell padding rather than empty spacer cells, which
+                           collapse in Outlook. table-layout:fixed plus a
+                           colgroup holds the three stops - under the default
+                           auto layout the bar cell stretches and shoves the
+                           count to the right edge. Bar lengths are the
+                           design's own: 31 / 118 / 70 px.
+                           ------------------------------------------------------ -->
+                      <tr>
+                        <td align="center" style="padding-top:24px;">
+                          <table role="presentation" width="203" cellpadding="0" cellspacing="0" border="0" align="center" style="width:203px;">
+                            <tbody>
+                              <!-- HIGH -->
+                              <tr>
+                                <td>
+                                  <table role="presentation" width="203" cellpadding="0" cellspacing="0" border="0" style="width:203px; table-layout:fixed;">
+                                    <colgroup>
+                                      <col width="57" style="width:57px;">
+                                      <col width="41" style="width:41px;">
+                                      <col width="105" style="width:105px;">
+                                    </colgroup>
+                                    <tbody><tr>
+                                      <td align="left" valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:24px; letter-spacing:-0.96px; color:#ee0004;">High</td>
+                                      <td valign="middle" style="padding-left:10px; line-height:0;">
+                                        <table role="presentation" width="31" cellpadding="0" cellspacing="0" border="0" style="width:31px;">
+                                          <tbody><tr>
+                                            <td bgcolor="#fab3b4" style="width:31px; height:24px; background-color:#fab3b4; border-radius:2px; font-size:1px; line-height:24px;">&nbsp;</td>
+                                          </tr></tbody>
+                                        </table>
+                                      </td>
+                                      <td align="left" valign="middle" style="padding-left:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:24px; letter-spacing:-0.6px; color:#000911;">1</td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                              <!-- MEDIUM -->
+                              <tr>
+                                <td style="padding-top:7px;">
+                                  <table role="presentation" width="203" cellpadding="0" cellspacing="0" border="0" style="width:203px; table-layout:fixed;">
+                                    <colgroup>
+                                      <col width="57" style="width:57px;">
+                                      <col width="128" style="width:128px;">
+                                      <col width="18" style="width:18px;">
+                                    </colgroup>
+                                    <tbody><tr>
+                                      <td align="left" valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:24px; letter-spacing:-0.96px; color:#7a5900;">Medium</td>
+                                      <td valign="middle" style="padding-left:10px; line-height:0;">
+                                        <table role="presentation" width="118" cellpadding="0" cellspacing="0" border="0" style="width:118px;">
+                                          <tbody><tr>
+                                            <td bgcolor="#d7cdb3" style="width:118px; height:24px; background-color:#d7cdb3; border-radius:2px; font-size:1px; line-height:24px;">&nbsp;</td>
+                                          </tr></tbody>
+                                        </table>
+                                      </td>
+                                      <td align="left" valign="middle" style="padding-left:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:24px; letter-spacing:-0.6px; color:#000911;">5</td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                              <!-- LOW -->
+                              <tr>
+                                <td style="padding-top:7px;">
+                                  <table role="presentation" width="203" cellpadding="0" cellspacing="0" border="0" style="width:203px; table-layout:fixed;">
+                                    <colgroup>
+                                      <col width="57" style="width:57px;">
+                                      <col width="80" style="width:80px;">
+                                      <col width="66" style="width:66px;">
+                                    </colgroup>
+                                    <tbody><tr>
+                                      <td align="left" valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:24px; letter-spacing:-0.96px; color:#c39300;">Low</td>
+                                      <td valign="middle" style="padding-left:10px; line-height:0;">
+                                        <table role="presentation" width="70" cellpadding="0" cellspacing="0" border="0" style="width:70px;">
+                                          <tbody><tr>
+                                            <td bgcolor="#eddfb3" style="width:70px; height:24px; background-color:#eddfb3; border-radius:2px; font-size:1px; line-height:24px;">&nbsp;</td>
+                                          </tr></tbody>
+                                        </table>
+                                      </td>
+                                      <td align="left" valign="middle" style="padding-left:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:24px; letter-spacing:-0.6px; color:#000911;">3</td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- ------------------------------------------------------
+                           HIGH — pill (114 x 37) then the reason table, 8px
+                           below it. One row per reason, so a reason that wraps
+                           grows the whole row and the three columns stay on a
+                           shared baseline. The colgroup percentages are the
+                           design's 0 / 297.5 / 412 stops over its 538px
+                           measure, so they survive the mobile reflow.
+
+                           The 60px padding-right on the reason column is what
+                           holds the gutter. Under table-layout:fixed padding
+                           comes out of the column, so 55% (296px) less 60 caps
+                           the reason text at the design's 236px and it wraps
+                           there. Without it the reason ran the full 296px and
+                           sat flush against SITE in any client that has no DM
+                           Sans - which is every Gmail client, where the
+                           fallback face is wider than the one this was set in.
+                           ------------------------------------------------------ -->
+                      <tr>
+                        <td style="padding-top:24px;">
+                          <table role="presentation" width="114" height="37" cellpadding="0" cellspacing="0" border="0" bgcolor="#fef2f2" style="width:114px; height:37px; background-color:#fef2f2; border-radius:10px;">
+                            <tbody><tr>
+                              <td align="center" valign="middle" style="padding:8px 10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:21px; letter-spacing:-0.96px; color:#ee0004; white-space:nowrap;">High</td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:8px;">
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:572px; max-width:572px; background-color:#ffffff; border:1px solid #f0f0f0; border-radius:8px;">
+                            <tbody><tr>
+                              <!-- 16px below the row, not the 12px the Medium and Low
+                                   cards carry: the design sets this one card that way
+                                   (node 328:605 vs 328:619 / 328:645). -->
+                              <td class="ap-pad" style="padding:12px 16px 16px 16px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
+                                  <colgroup>
+                                    <col class="tk-c1" width="55%" style="width:55%;">
+                                    <col class="tk-c2" width="21%" style="width:21%;">
+                                    <col class="tk-c3" width="24%" style="width:24%;">
+                                  </colgroup>
+                                  <tbody>
+                                    <tr>
+                                      <td class="tk-head tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Reason</td>
+                                      <td class="tk-head tk-c2" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
+                                      <td class="tk-head tk-c3" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">Threat detection is not running on the appliance</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- MEDIUM — 20px below the table above -->
+                      <tr>
+                        <td style="padding-top:20px;">
+                          <table role="presentation" width="114" height="37" cellpadding="0" cellspacing="0" border="0" bgcolor="#f8f7f2" style="width:114px; height:37px; background-color:#f8f7f2; border-radius:10px;">
+                            <tbody><tr>
+                              <td align="center" valign="middle" style="padding:8px 10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:21px; letter-spacing:-0.96px; color:#7a5900; white-space:nowrap;">Medium</td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:8px;">
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:572px; max-width:572px; background-color:#ffffff; border:1px solid #f0f0f0; border-radius:8px;">
+                            <tbody><tr>
+                              <td class="ap-pad" style="padding:12px 16px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
+                                  <colgroup>
+                                    <col class="tk-c1" width="55%" style="width:55%;">
+                                    <col class="tk-c2" width="21%" style="width:21%;">
+                                    <col class="tk-c3" width="24%" style="width:24%;">
+                                  </colgroup>
+                                  <tbody>
+                                    <tr>
+                                      <td class="tk-head tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Reason</td>
+                                      <td class="tk-head tk-c2" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
+                                      <td class="tk-head tk-c3" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">562 detections from 10.95.1.28</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">Swap in use (34.8% peak)</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">Swap in use (22.3% peak)</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">No IDS alerts recorded in Wazuh for this window</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">Appliance restart in this period</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- LOW -->
+                      <tr>
+                        <td style="padding-top:20px;">
+                          <table role="presentation" width="114" height="37" cellpadding="0" cellspacing="0" border="0" bgcolor="#fcfaf2" style="width:114px; height:37px; background-color:#fcfaf2; border-radius:10px;">
+                            <tbody><tr>
+                              <td align="center" valign="middle" style="padding:8px 10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:21px; letter-spacing:-0.96px; color:#c39300; white-space:nowrap;">Low</td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:8px;">
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:572px; max-width:572px; background-color:#ffffff; border:1px solid #f0f0f0; border-radius:8px;">
+                            <tbody><tr>
+                              <td class="ap-pad" style="padding:12px 16px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
+                                  <colgroup>
+                                    <col class="tk-c1" width="55%" style="width:55%;">
+                                    <col class="tk-c2" width="21%" style="width:21%;">
+                                    <col class="tk-c3" width="24%" style="width:24%;">
+                                  </colgroup>
+                                  <tbody>
+                                    <tr>
+                                      <td class="tk-head tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Reason</td>
+                                      <td class="tk-head tk-c2" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
+                                      <td class="tk-head tk-c3" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">9 file change(s) detected on the appliance</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">17 of 49 active firewall rules saw no traffic since their counters were last reset</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="tk-cell tk-c1" align="left" valign="top" style="padding-right:60px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; color:#000911;">Only alerts are recorded, not full traffic detail</td>
+                                      <td class="tk-cell tk-c2" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="tk-cell tk-c3" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- Solid button, right-aligned, 196 x 56 (16 + 22 + 16 plus
+                           the 1px border top and bottom). The border is
+                           rgba(5,99,255,0.24) pre-blended over white, the same
+                           #c3daff the weekly outline button uses. -->
+                      <tr>
+                        <td align="right" style="padding-top:20px;">
+                          <table role="presentation" width="196" height="56" cellpadding="0" cellspacing="0" border="0" bgcolor="#0563ff" align="right" style="width:196px; height:56px; background-color:#0563ff; border:1px solid #c3daff; border-radius:30px;">
+                            <tbody><tr>
+                              <td align="center" valign="middle" style="padding:16px;">
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                  <tbody><tr>
+                                    <td valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap;">
+                                      <a href="#" style="color:#ffffff; text-decoration:none;">VIEW FULL REPORT</a>
+                                    </td>
+                                    <td valign="middle" style="padding-left:8px; line-height:0;">
+                                      <a href="#" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-white-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
+                                    </td>
+                                  </tr></tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   EVERY APPLIANCE AT A GLANCE — per-appliance Condition and
+                   Security tables (node 328:545).
+
+                   Both cards are one row per appliance, so a value that wraps
+                   grows the whole row and the five columns stay on a shared
+                   baseline. table-layout:fixed plus a colgroup is what holds
+                   them: under the default auto layout the short values
+                   shrink-wrap and drift off the design's stops. The percentages
+                   ARE those stops over the 540px measure, so they survive the
+                   mobile reflow the .ap-* rules apply. Condition and Security
+                   carry slightly different stops, per the design.
+
+                   Columns 1-4 carry a padding-right - 28px on Condition, 26px
+                   on Security - because those percentages span stop to stop,
+                   gutter included. Under table-layout:fixed the padding comes
+                   out of the column, so it lands each content box on the
+                   design's own width (126 / 52 / 96 / 85 and 126 / 52 / 83 /
+                   92) and guarantees the gutter. Without it a value could run
+                   the full column and touch its neighbour wherever DM Sans is
+                   missing and the wider fallback face is used - which is every
+                   Gmail client.
+
+                   Change arrows are the text glyphs U+25B2 / U+25BC / U+2248,
+                   exactly as the design sets them - no asset needed. Colours:
+                   #008a17 down, #ee0004 up, #8e8e8e flat.
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#f6f6f6" class="side-pad" style="background-color:#f6f6f6; padding:34px 34px 54px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="padding-bottom:16px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911;">
+                          Every Appliance at a glance
+                        </td>
+                      </tr>
+
+                      <!-- CONDITION -->
+                      <tr>
+                        <td style="padding-bottom:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
+                          Condition
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:572px; max-width:572px; background-color:#ffffff; border-radius:8px;">
+                            <tbody><tr>
+                              <td class="ap-pad" style="padding:12px 16px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
+                                  <colgroup>
+                                    <col class="ap-c1" width="28.7%" style="width:28.7%;">
+                                    <col class="ap-c2" width="15.0%" style="width:15.0%;">
+                                    <col class="ap-c3" width="23.1%" style="width:23.1%;">
+                                    <col class="ap-c4" width="21.1%" style="width:21.1%;">
+                                    <col class="ap-c5" width="12.1%" style="width:12.1%;">
+                                  </colgroup>
+                                  <tbody>
+                                    <tr>
+                                      <td class="ap-head ap-c1" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                      <td class="ap-head ap-c2" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
+                                      <td class="ap-head ap-c3" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Memory peak</td>
+                                      <td class="ap-head ap-c4" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">CPU typical</td>
+                                      <td class="ap-head ap-c5" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Storage</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">67.0% <span style="color:#008a17;">&#9660;&nbsp;22%</span></td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">25.4% <span style="color:#8e8e8e;">&#8776;&nbsp;same</span></td>
+                                      <td class="ap-cell ap-c5" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">10.2% <span style="color:#ee0004;">&#9650;&nbsp;12%</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">69.7% <span style="color:#8e8e8e;">&#8776;&nbsp;same</span></td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">11.1% <span style="color:#ee0004;">&#9650;&nbsp;9%</span></td>
+                                      <td class="ap-cell ap-c5" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">7.0% <span style="color:#ee0004;">&#9650;&nbsp;15%</span></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- SECURITY — 16px below the Condition card. Its stops are
+                           slightly different from Condition's, per the design. -->
+                      <tr>
+                        <td style="padding-top:16px; padding-bottom:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
+                          Security
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:572px; max-width:572px; background-color:#ffffff; border-radius:8px;">
+                            <tbody><tr>
+                              <td class="ap-pad" style="padding:12px 16px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
+                                  <colgroup>
+                                    <col class="ap-c1" width="28.3%" style="width:28.3%;">
+                                    <col class="ap-c2" width="14.6%" style="width:14.6%;">
+                                    <col class="ap-c3" width="20.3%" style="width:20.3%;">
+                                    <col class="ap-c4" width="22.0%" style="width:22.0%;">
+                                    <col class="ap-c5" width="14.8%" style="width:14.8%;">
+                                  </colgroup>
+                                  <tbody>
+                                    <tr>
+                                      <td class="ap-head ap-c1" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                      <td class="ap-head ap-c2" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
+                                      <td class="ap-head ap-c3" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Detections</td>
+                                      <td class="ap-head ap-c4" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Most severe</td>
+                                      <td class="ap-head ap-c5" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Blocked %</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">0 <span style="color:#008a17;">&#9660;&nbsp;100%</span></td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">0</td>
+                                      <td class="ap-cell ap-c5" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">7,717 <span style="color:#ee0004;">&#9650;&nbsp;58%</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">1,220 <span style="color:#ee0004;">&#9650;&nbsp;311%</span></td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">1 <span style="color:#ee0004;">&#9650;&nbsp;1%</span></td>
+                                      <td class="ap-cell ap-c5" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">257 <span style="color:#008a17;">&#9660;&nbsp;36%</span></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   CTA BAND
+                   ============================================================ -->
+              <tr>
+                <!-- Band is exactly 229px from padding + content (34 + 161 + 34); an
+                     explicit height would be a content-box height and add the padding
+                     on top of it, so it is deliberately omitted. -->
+                <td bgcolor="#eef4ff" align="center" valign="top" class="side-pad" style="background-color:#eef4ff; padding:34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <!-- heading + body: 419px measure -->
+                      <tr>
+                        <td align="center">
+                          <table role="presentation" class="full" width="419" cellpadding="0" cellspacing="0" border="0" align="center" style="width:419px; max-width:419px;">
+                            <tbody>
+                              <tr>
+                                <td align="center" style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#0563ff;">
+                                  Continuous protection for what matters
+                                </td>
+                              </tr>
+                              <tr>
+                                <td align="center" style="padding-top:7px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.64px; color:#3480ff;">
+                                  We monitor, detect, and block threats around the clock. so you can focus on your people, places, and peace of mind.
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <!-- sign-off 34px below the text block, 2px between lines.
+                           rgba(5,99,255,0.5) pre-blended over #eef4ff -> #7aacff for Outlook -->
+                      <tr>
+                        <td class="serif-i" align="center" style="padding-top:34px; font-family:'Instrument Serif','Times New Roman',serif; font-style:italic; font-size:16px; letter-spacing:-0.16px;">
+                          <div style="line-height:21px; color:#7aacff;">Thank you,</div>
+                          <div style="padding-top:2px; line-height:22px; color:#0563ff;">Astralink Connect Team</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   FOOTER
+                   ============================================================ -->
+              <!-- Two bands, exactly as the design stacks them: a 246px blue band
+                   carrying the brand block, then a flat #1f1f1f 100px strip for the
+                   legal copy. Heights come from the padding chains rather than an
+                   explicit height, which would be a content-box height in email. -->
+
+              <!-- Blue band, 246px — one flat image, and the whole band is the link.
+                   It used to be live white text over footer-bg.png, which no
+                   dark-mode client renders correctly: the background is an
+                   image, so a client cannot recolour it, but it DOES recolour
+                   the text on top, and the white strapline and site link turned
+                   near-black on blue. Gmail's apps force that inversion on every
+                   message and honour neither the color-scheme meta nor
+                   prefers-color-scheme, so no CSS can opt out of it.
+                   footer-band.png has the logo, the strapline and the site line
+                   baked in at @2x (1280 x 492). Pixels are never inverted, so
+                   the band renders identically in every client and every theme.
+                   Same reasoning as the hero.
+                   The <a> wraps the image, so a click anywhere on the band goes
+                   to astralinkconnect.com; the alt text carries the copy for
+                   blocked images, and bgcolor holds the brand blue behind it. -->
+              <tr>
+                <td bgcolor="#173674" style="background-color:#173674; padding:0; margin:0; line-height:0; font-size:0;">
+                  <a href="https://astralinkconnect.com" style="display:block; text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/footer-band.png" width="640" height="246" alt="AstraLink Connect &mdash; Connect In Privacy&trade; &middot; Houston, Texas &middot; Visit astralinkconnect.com" style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:14px; line-height:20px; color:#ffffff;"></a>
+                </td>
+              </tr>
+
+              <!-- Legal strip, 100px (26+48+26 - the two 24px lines sit dead centre),
+                   547px measure. rgba(255,255,255,0.7) is pre-blended over #1f1f1f to
+                   #bcbcbc so Outlook, which drops rgba, does not render it pure white
+                   and lose the contrast against the links. -->
+              <tr>
+                <td bgcolor="#1f1f1f" align="center" class="side-pad legal-strip" style="background-color:#1f1f1f; padding:26px 34px;">
+                  <table role="presentation" class="full" width="547" cellpadding="0" cellspacing="0" border="0" align="center" style="width:547px; max-width:547px;">
+                    <tbody><tr>
+                      <td align="center" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:24px; letter-spacing:-0.84px; color:#bcbcbc;">
+                        You received this because you subscribed to the AstraLink Connect brief.<br>
+                        <a href="https://www.astralinkconnect.com/" style="color:#ffffff; text-decoration:underline;">Unsubscribe</a>
+                        <span style="color:#ffffff;">&nbsp;&middot;&nbsp;</span>
+                        <a href="https://www.astralinkconnect.com/legal/privacy-policy" style="color:#ffffff; text-decoration:underline;">Privacy</a>
+                      </td>
+                    </tr></tbody>
+                  </table>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          <!-- ============ /EMAIL CONTAINER ============ -->
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

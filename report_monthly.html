@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <!-- Dark mode. Declaring both schemes tells Apple Mail, iOS Mail and
+       Outlook.com that this email ships its own palette, so they render it as
+       designed rather than recolouring it. Gmail's apps ignore this and invert
+       regardless, which is why the hero and the footer band are flat images:
+       pixels are the one thing an inverting client cannot touch. The @media
+       block below covers the live text that is left. -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>AstraLink Connect — Monthly Report</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <!--
+    ============================================================================
+    IMAGE ASSETS — served from CloudFront, absolute https URLs, so this file is
+    send-ready as it stands. Every src below sits under:
+
+      https://d12sb60thikcyd.cloudfront.net/static-assets/email
+
+    The local ./assets folder is the source of these files; index-with-assets.html
+    and monthly-with-assets.html are the relative-path previews of the same
+    markup. Upload any new or re-exported asset to that CloudFront prefix under
+    the same filename and nothing here needs to change.
+
+      MARKUP                     FILE                    display  notes
+      hero (whole section)       monthly-hero.png        640x313  @1x, text baked in
+      meta bar location          icon-location.png        16x16
+      meta bar date              icon-calendar.png        16x16
+      stat card 1                icon-threats.png         16x16   threat detections
+      stat card 2                icon-domains.png         16x16   malicious domains
+      stat card 3                icon-devices.png         16x16   devices on network
+      stat card 4                icon-detenctions.png     16x16   most-severe detections
+      stat card 5                icon-traffic.png         16x16   traffic inspected
+      stat card 6                icon-round-arrow.png     16x16   "view all reports"
+      takeaway "action required" icon-action.png          21x21   #EE0004 triangle
+      takeaway "watch item"      icon-watch.png           21x21   #EBB000 circle
+      takeaway "working well"    icon-working.png         21x21   #009919 circle
+      takeaway chevrons (x3)     icon-gray-right.png      14x14   #8E8E8E
+      "VIEW FULL REPORT" arrow   icon-right-arrow.png     16x16   #0563FF
+      CTA band mark              logo-cta.png             30x29   white mark
+      footer band (whole band)   footer-band.png         640x246  @2x, text baked in
+
+    NOT USED — logo.png (85 x 24), footer-logo.png (70 x 72) and footer-bg.png
+    (640 x 246). The hero and the footer band are each one flat image now, with
+    the logos and copy baked in, so nothing references these three any more.
+    footer-band.png is footer-logo.png and the two text lines composited over
+    footer-bg.png; keep those two as the source if the band needs re-cutting.
+
+    monthly-hero.png is a 640px @1x export, so it renders soft on retina, where
+    the weekly hero ships at @4x. Re-export it at @2x (1280 x 626) to match.
+
+    The filename "icon-detenctions.png" carries a typo in the assets folder. It
+    is referenced here exactly as it sits on disk - rename both together if you
+    ever fix it.
+
+    The footer logo stays an image because the "AstraLink / Connect" wordmark is
+    set in Salma Pro Medium, which no email client has. Its alt text carries
+    inline font styles so a blocked image still reads as the brand name.
+
+    No asset needed for the meta bar "|": it is a 1px cell (#3782ff = white @20%
+    over #0563ff). The footer carries no rule - node 1:446 sits at y=247,
+    outside the 246px band's clip, so it never renders.
+
+    No asset is needed for the "at a glance" change column either: the triangles
+    are the text glyphs U+25B2 / U+25BC, exactly as the design sets them.
+
+    NOTE on icon-green-down.png: Figma exports both arrows as the SAME up-right
+    path and flips the green one in CSS. Email cannot transform images, so the
+    flip is baked into the PNG itself. icon-red-up.png/icon-green-down.png are
+    now unused: the 5 headline stat cards ("vs previous month") render an
+    inline U+25B2/U+25BC glyph via Stat.ChangeLabel/Colour instead of a hosted
+    icon, the same technique the "at a glance" change column already used
+    below — a deliberate, requested deviation from up=red/down=green (more is
+    worse) to a literal up=green/down=red (the figure grew/shrank), which a
+    fixed-color hosted PNG could not express consistently with a flipped text
+    colour.
+    ============================================================================
+  -->
+  <!-- Web fonts. Two sources, because no single one reaches every client:
+
+       1. The <link> below, for clients that will fetch an external stylesheet.
+       2. The @font-face rules at the top of the <style> block, which carry the
+          same face inline.
+
+       The second is what actually delivers Instrument Serif on mobile: a
+       client that strips <link> from the head but keeps <style> - and that is
+       most of them - had nothing left to load the font from, so the meta bar
+       and the sign-off fell back to Georgia. @import is still not used: most
+       clients strip it outright, and it fails even where the rest of the CSS
+       survives.
+
+       Neither source reaches Gmail (webmail and both apps), Outlook on
+       Windows, Yahoo or AOL - those support no web fonts at all and will
+       render the serif in Georgia whatever this file does. Baking the type
+       into a PNG is the only way to pin it there, which is what the hero and
+       the footer band already do.
+
+       Inline fallbacks are on every element, so a client that drops both
+       still renders correctly. -->
+  <!--[if !mso]><!-->
+  <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Instrument+Serif:ital@1&display=swap">
+  <!--<![endif]-->
+  <style>
+    /* ------------------------------------------------------------------
+       Instrument Serif Italic, inlined - the same two faces the <link>
+       above fetches, so the font still arrives where <link> is stripped
+       but <style> survives: Apple Mail on macOS and iOS, Outlook for Mac,
+       Samsung Mail, Thunderbird.
+
+       Wrapped in @media screen so the Word engine behind Outlook on
+       Windows, which ignores that block wholesale, never sees rules it
+       cannot use. The faces, their unicode-ranges and the gstatic URLs
+       are Google's own, copied verbatim; those URLs are content-hashed
+       and permanent. The latin rule is last on purpose - a client that
+       does not understand unicode-range takes the last match for every
+       character, and latin is the range this email actually sets. ----- */
+    @media screen {
+      /* latin-ext */
+      @font-face {
+        font-family: 'Instrument Serif';
+        font-style: italic;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjgn7Motmp5r61.woff2) format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Instrument Serif';
+        font-style: italic;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7Motmp5g.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+    }
+
+    /* Same declaration as the meta tags, for clients that read CSS but not
+       <meta>. Belongs first so it applies before anything below. */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+
+    /* Client resets */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; }
+    a { text-decoration: none; }
+
+    /* Mobile stacking */
+    @media only screen and (max-width: 640px) {
+      .full { width: 100% !important; max-width: 100% !important; }
+      .stack { display: block !important; width: 100% !important; }
+      .card-gap { height: 12px !important; line-height: 12px !important; font-size: 12px !important; }
+      .side-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      /* Meta bar: stack report type above the location / date groups */
+      .meta-grp { display: block !important; width: 100% !important; text-align: left !important; }
+      .meta-grp2 { padding-top: 8px !important; padding-left: 0 !important; }
+      /* Stat cards: horizontal 8px gap becomes a vertical one when stacked */
+      .card-cell { display: block !important; width: 100% !important; padding-left: 0 !important; padding-top: 8px !important; }
+      .card-cell-first { padding-top: 0 !important; }
+      /* Key Takeaways: left copy block above the three cards */
+      .tk-left { padding-top: 0 !important; }
+      .tk-right { padding-top: 24px !important; }
+      /* At a glance: the 24px gutter in front of the change column is
+         unaffordable once the table reflows, and at 67 / 18 / 15 the change
+         column comes out around 37px on a 320px screen - narrower than the
+         word "CHANGE" itself, which is what broke the header over two lines.
+         So the gutter goes, the split is re-cut in favour of the last two
+         columns, and the header drops a step and is held on one line. The
+         metric column is the one that can afford to wrap. */
+      .gl-change { padding-left: 0 !important; }
+      .gl-c1 { width: 50% !important; }
+      .gl-c2 { width: 24% !important; }
+      .gl-c3 { width: 26% !important; }
+      .gl-head { font-size: 12px !important; letter-spacing: -0.2px !important; }
+    }
+
+    /* ------------------------------------------------------------------
+       Dark mode fallback for the legal strip. If a client dims or inverts
+       the palette despite the color-scheme declaration above, the flat
+       #1f1f1f strip flips to near-white while the #bcbcbc copy stays
+       mid-grey, and the line loses most of its contrast. These pin it back
+       to its own colours.
+
+       The blue band above it is not listed here: it has no live text left
+       to recolour, which is the only thing Gmail's forced inversion cannot
+       defeat. The strip keeps its live text because the unsubscribe link
+       has to be real, selectable text.
+
+       !important is what lets these win: a declaration marked important in
+       a stylesheet beats an element's inline style. --------------------- */
+    @media (prefers-color-scheme: dark) {
+      .legal-strip         { background-color: #1f1f1f !important; }
+      .legal-strip td      { color: #bcbcbc !important; }
+      .legal-strip a       { color: #ffffff !important; }
+    }
+
+    /* Outlook for iOS / Android does not use the media query: it rewrites
+       the markup, stamping [data-ogsc] on elements whose text colour it
+       changed and [data-ogsb] on backgrounds. Same rules, its selectors. */
+    [data-ogsb] .legal-strip    { background-color: #1f1f1f !important; }
+    [data-ogsc] .legal-strip td { color: #bcbcbc !important; }
+    [data-ogsc] .legal-strip a  { color: #ffffff !important; }
+  </style>
+
+  <!-- Outlook on Windows cannot have Instrument Serif - the Word engine
+       supports no web font at all. Worse, it does not walk a font stack:
+       it takes the FIRST family named and, when that is missing, drops to
+       Times New Roman rather than trying Georgia next. So the four serif
+       cells would render in Times there, not in the Georgia they name as
+       the fallback. This block is read only by Outlook/Word and hands
+       those cells Georgia directly. Everything else ignores it. -->
+  <!--[if mso]>
+  <style>
+    .serif-i { font-family: Georgia, 'Times New Roman', serif !important; font-style: italic !important; }
+  </style>
+  <![endif]-->
+</head>
+<body style="margin:0; padding:0; background-color:#e9e9e9;">
+
+  <!-- Preheader (hidden preview text) -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#e9e9e9;">
+    Here's what protected your network this month — detected, blocked and monitored.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#e9e9e9;">
+    <tbody>
+      <tr>
+        <td align="center" style="padding:0;">
+
+          <!-- ============ EMAIL CONTAINER (640) ============ -->
+          <table role="presentation" class="full" width="640" cellpadding="0" cellspacing="0" border="0" style="width:640px; max-width:640px; background-color:#ffffff;">
+            <tbody>
+
+              <!-- ============================================================
+                   HERO — a single flat image.
+                   The logo, the heading and the serif sub-heading are all baked
+                   into monthly-hero.png, so there is no live text, no web font
+                   and no VML fallback to keep in sync here. The export is 640 x
+                   313 at @1x, so it is soft on retina; re-export at @2x when you can.
+                   width:100% + height:auto lets it shrink with the container on
+                   mobile; the width/height attributes hold it at 640 x 313 in
+                   Outlook, which ignores the inline CSS. bgcolor matches the
+                   artwork's top-left so a slow load does not flash white.
+                   The alt text carries the full headline for blocked images.
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#0a1424" style="background-color:#0a1424; padding:0; margin:0; line-height:0; font-size:0;">
+                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/monthly-hero.png" width="640" height="313" alt="AstraLink Connect &mdash; Here&rsquo;s what protected your network this month. A short summary of what we stopped and what we&rsquo;re watching." style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:16px; line-height:22px; color:#ffffff;">
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   META BAR — report type / location / date range
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#0563ff" class="side-pad" style="background-color:#0563ff; padding:20px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <!-- Left: report type. width=100% absorbs the slack so the
+                             group below is pushed flush right without floats. -->
+                        <td class="meta-grp" width="100%" align="left" valign="middle"
+                            style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:20px; line-height:28px; letter-spacing:-1px; color:#ffffff; white-space:nowrap;">
+                          Monthly Report
+                        </td>
+
+                        <!-- Location -->
+                        <td class="meta-grp meta-grp2" align="right" valign="middle">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <tr>
+                                <td valign="middle" style="line-height:0;">
+                                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-location.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                </td>
+                                <td class="serif-i" valign="middle" style="padding-left:8px; font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:20px; line-height:28px; letter-spacing:-0.2px; color:#ffffff; white-space:nowrap;">
+                                  {{ .WorkspaceName }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+
+                        <!-- Date range (24px gap via padding — empty spacer cells
+                             collapse in Outlook) -->
+                        <td class="meta-grp meta-grp2" align="right" valign="middle" style="padding-left:24px;">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <tr>
+                                <td valign="middle" style="line-height:0;">
+                                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-calendar.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                </td>
+                                <td class="serif-i" valign="middle" style="padding-left:8px; font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:20px; line-height:28px; color:#ffffff; white-space:nowrap;">
+                                  {{ .DateRange }}
+                                </td>
+                                <!-- 1 x 19 rule: white @20% pre-blended over #0563ff -->
+                                <td valign="middle" style="padding:0 6px;">
+                                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                    <tbody><tr>
+                                      <td width="1" bgcolor="#3782ff" style="width:1px; height:19px; background-color:#3782ff; font-size:1px; line-height:19px;">&nbsp;</td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                                <td class="serif-i" valign="middle" style="font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:20px; line-height:28px; color:#ffffff; white-space:nowrap;">
+                                  {{ .Year }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   STATS — Detected, blocked, monitored (two rows of three)
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#f6f6f6" class="side-pad" style="background-color:#f6f6f6; padding:34px 34px 59px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <!-- 31px line box + 4px, per the monthly design; the weekly layout
+                             sets this pair 11px apart. -->
+                        <td style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911; padding-bottom:4px;">
+                          Detected, blocked, monitored
+                        </td>
+                      </tr>
+                      <tr>
+                        <!-- Copy is verbatim from the monthly design (node 1:331), which
+                             still reads "seven days". Swap to "month" once that is fixed. -->
+                        <td style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343; padding-bottom:24px;">
+                          Here&rsquo;s what your network handled over the previous month.
+                        </td>
+                      </tr>
+                      <!-- Cards row 1: 185 + (8+186) + (8+185) = 572. Gaps are cell
+                           padding, not empty spacer cells (those collapse in Outlook). -->
+                      <tr>
+                        <td>
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <tr>
+                                <!-- CARD 1 -->
+                                <td class="stack card-cell card-cell-first" width="185" valign="top" style="width:185px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <!-- icon pill (x16,y16) + trend block (right, 82px) -->
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-threats.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><span style="display:inline-block; vertical-align:middle; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:{{ .Threats.Colour }};">{{ .Threats.ChangeLabel }}</span></td>
+                                              </tr>
+                                              {{ if not .Threats.IsNew }}<tr>
+                                                <!-- "VS PREVIOUS MONTH" is a longer string than the weekly
+                                                     wording and wraps to two lines inside the 82px column,
+                                                     exactly as the design sets it. Suppressed entirely when
+                                                     the figure is new (no previous-month baseline) — showing
+                                                     both "New" and this caption at once is redundant. -->
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS MONTH
+                                                </td>
+                                              </tr>{{ end }}
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <!-- value + label (x16,y115, 135px measure) -->
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">{{ .Threats.Value }}</div>
+                                          <div style="padding-top:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Threats<br>detections</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 2 -->
+                                <td class="stack card-cell" width="186" valign="top" style="width:186px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="186" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:186px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <!-- icon pill (x16,y16) + trend block (right, 82px) -->
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-domains.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><span style="display:inline-block; vertical-align:middle; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:{{ .DomainsBlocked.Colour }};">{{ .DomainsBlocked.ChangeLabel }}</span></td>
+                                              </tr>
+                                              {{ if not .DomainsBlocked.IsNew }}<tr>
+                                                <!-- "VS PREVIOUS MONTH" is a longer string than the weekly
+                                                     wording and wraps to two lines inside the 82px column,
+                                                     exactly as the design sets it. Suppressed entirely when
+                                                     the figure is new (no previous-month baseline) — showing
+                                                     both "New" and this caption at once is redundant. -->
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS MONTH
+                                                </td>
+                                              </tr>{{ end }}
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <!-- value + label (x16,y115, 135px measure) -->
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">{{ .DomainsBlocked.Value }}</div>
+                                          <div style="padding-top:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Malicious<br>domains Blocked</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 3 -->
+                                <td class="stack card-cell" width="185" valign="top" style="width:185px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <!-- icon pill (x16,y16) + trend block (right, 82px) -->
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-devices.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><span style="display:inline-block; vertical-align:middle; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:{{ .Devices.Colour }};">{{ .Devices.ChangeLabel }}</span></td>
+                                              </tr>
+                                              {{ if not .Devices.IsNew }}<tr>
+                                                <!-- "VS PREVIOUS MONTH" is a longer string than the weekly
+                                                     wording and wraps to two lines inside the 82px column,
+                                                     exactly as the design sets it. Suppressed entirely when
+                                                     the figure is new (no previous-month baseline) — showing
+                                                     both "New" and this caption at once is redundant. -->
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS MONTH
+                                                </td>
+                                              </tr>{{ end }}
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <!-- value + label (x16,y115, 135px measure) -->
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">{{ .Devices.Value }}</div>
+                                          <div style="padding-top:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Devices<br>on network</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <!-- Cards row 2, 8px below row 1. When the cards stack on mobile the
+                           row-2 top padding plus .card-cell-first on card 4 keeps that gap
+                           at a single 8px rather than doubling it. -->
+                      <tr>
+                        <td style="padding-top:8px;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <tr>
+                                <!-- CARD 4 -->
+                                <td class="stack card-cell card-cell-first" width="185" valign="top" style="width:185px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:185px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <!-- icon pill (x16,y16) + trend block (right, 82px) -->
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-detenctions.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><span style="display:inline-block; vertical-align:middle; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:{{ .MostSevere.Colour }};">{{ .MostSevere.ChangeLabel }}</span></td>
+                                              </tr>
+                                              {{ if not .MostSevere.IsNew }}<tr>
+                                                <!-- "VS PREVIOUS MONTH" is a longer string than the weekly
+                                                     wording and wraps to two lines inside the 82px column,
+                                                     exactly as the design sets it. Suppressed entirely when
+                                                     the figure is new (no previous-month baseline) — showing
+                                                     both "New" and this caption at once is redundant. -->
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS MONTH
+                                                </td>
+                                              </tr>{{ end }}
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <!-- value + label (x16,y115, 135px measure) -->
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">{{ .MostSevere.Value }}</div>
+                                          <div style="padding-top:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Most-severe<br>detections</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 5 -->
+                                <td class="stack card-cell" width="186" valign="top" style="width:186px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="186" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:186px; height:197px; background-color:#ffffff; border-radius:16px;">
+                                    <tbody>
+                                      <!-- icon pill (x16,y16) + trend block (right, 82px) -->
+                                      <tr>
+                                        <td valign="top" style="padding:16px 0 0 16px;">
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border-radius:40px;">
+                                            <tbody><tr><td style="padding:8px; line-height:0;">
+                                              <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-traffic.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;">
+                                            </td></tr></tbody>
+                                          </table>
+                                        </td>
+                                        <td valign="top" align="right" style="padding:16px 16px 0 0;">
+                                          <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="right" style="font-size:0; line-height:16px;"><span style="display:inline-block; vertical-align:middle; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:{{ .TrafficInspected.Colour }};">{{ .TrafficInspected.ChangeLabel }}</span></td>
+                                              </tr>
+                                              {{ if not .TrafficInspected.IsNew }}<tr>
+                                                <!-- "VS PREVIOUS MONTH" is a longer string than the weekly
+                                                     wording and wraps to two lines inside the 82px column,
+                                                     exactly as the design sets it. Suppressed entirely when
+                                                     the figure is new (no previous-month baseline) — showing
+                                                     both "New" and this caption at once is redundant. -->
+                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
+                                                  VS PREVIOUS MONTH
+                                                </td>
+                                              </tr>{{ end }}
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <!-- value + label (x16,y115, 135px measure) -->
+                                      <tr>
+                                        <td colspan="2" valign="top" style="padding:48px 16px 16px 16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:32px; line-height:34px; letter-spacing:-1.6px; color:#0563ff;">{{ .TrafficInspected.Value }}</div>
+                                          <div style="padding-top:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:16px; text-transform:uppercase; color:#000911;">Traffic<br>inspected</div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                                <!-- CARD 6 — "view all reports" tile. rgba(5,99,255,0.05)
+                                     pre-blended over the #f6f6f6 band -> #e9eef6, so Outlook,
+                                     which drops rgba, still gets the tint. -->
+                                <td class="stack card-cell" width="185" valign="top" style="width:185px; padding-left:8px;">
+                                  <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#e9eef6" style="width:185px; height:197px; background-color:#e9eef6; border-radius:16px;">
+                                    <tbody>
+                                      <tr>
+                                        <td align="center" valign="middle" style="padding:16px;">
+                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:14px; line-height:16px; text-transform:uppercase; white-space:nowrap;">
+                                            <a href="{{ .ReportsURL }}" style="color:#0563ff; text-decoration:none;">View all reports</a>
+                                          </div>
+                                          <!-- align=center rather than margin:auto — Outlook ignores
+                                               auto margins on a block-level image -->
+                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                            <tbody><tr>
+                                              <td style="padding-top:4px; line-height:0;">
+                                                <a href="{{ .ReportsURL }}" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-round-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
+                                              </td>
+                                            </tr></tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   THIS MONTH AT A GLANCE — metric / value / change table
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#ffffff" class="side-pad" style="background-color:#ffffff; padding:34px 34px 58px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911;">
+                          This month at a glance
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:4px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
+                          Compared with the previous month
+                        </td>
+                      </tr>
+                      <!-- Card is 572 x 226: 12px + 202px of rows + 12px, 16px each side.
+                           The height comes out of the padding chain rather than a height
+                           attribute, which email treats as a content-box height. -->
+                      <tr>
+                        <td style="padding-top:16px;">
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f6f6" style="width:572px; max-width:572px; background-color:#f6f6f6; border-radius:8px;">
+                            <tbody><tr>
+                              <td style="padding:12px 16px;">
+                                <!-- One <tr> per metric, so a label that wraps grows the whole
+                                     row and the three columns stay on a shared baseline.
+                                     table-layout:fixed + <colgroup> is what actually holds the
+                                     columns: with the default auto layout the short values
+                                     shrink-wrap and drift right of the 363 / 458 / 540 stops
+                                     the design sets. The percentages are those stops over the
+                                     540px measure (363 / 95 / 82, the last including its 24px
+                                     gutter), so they survive the mobile reflow too. -->
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
+                                  <colgroup>
+                                    <col class="gl-c1" width="67%" style="width:67%;">
+                                    <col class="gl-c2" width="18%" style="width:18%;">
+                                    <col class="gl-c3" width="15%" style="width:15%;">
+                                  </colgroup>
+                                  <tbody>
+                                    <!-- header: rgba(0,9,17,0.3) pre-blended over #f6f6f6 -->
+                                    <tr>
+                                      <td class="gl-head gl-c1" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; color:#acafb1; white-space:nowrap;">Metric</td>
+                                      <td class="gl-head gl-c2" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; color:#acafb1; white-space:nowrap;">Value</td>
+                                      <td class="gl-change gl-head gl-c3" align="left" valign="top" style="padding-left:24px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; color:#acafb1; white-space:nowrap;">Change</td>
+                                    </tr>
+{{ range .Glance }}                                    <tr>
+                                      <td align="left" valign="top" style=" {{ if not .IsLast }}padding-bottom:10px; {{ end }}font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.72px; color:#000911;">{{ .Metric }}</td>
+                                      <td align="left" valign="top" style=" {{ if not .IsLast }}padding-bottom:10px; {{ end }}font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.72px; color:#000911; white-space:nowrap;">{{ .Value }}</td>
+                                      <td class="gl-change" align="left" valign="top" style="padding-left:24px; {{ if not .IsLast }}padding-bottom:10px; {{ end }}font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.72px; color:{{ .Colour }};">{{ .ChangeLabel }}</td>
+                                    </tr>
+{{ end }}                                  </tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   KEY TAKEAWAYS
+                   The band is #f6f6f6 and the three cards are white - the inverse
+                   of the weekly layout, per the monthly design (nodes 11:391
+                   and 11:400 / 11:409 / 11:419).
+                   ============================================================ -->
+              <tr>
+                <td bgcolor="#f6f6f6" class="side-pad" style="background-color:#f6f6f6; padding:34px 34px 34px 34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <!-- LEFT column: 241px (275 - 34); the old 16px spacer cell is
+                             absorbed into this width, as in the design -->
+                        <td class="stack tk-left" width="241" valign="top" style="width:241px; padding-top:12px;">
+                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911;">Key Takeaways</div>
+                          <div style="padding-top:4px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">What needs your attention</div>
+                          <!-- Button: fixed 173 x 44, content centred -->
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                            <tbody><tr>
+                              <td style="padding-top:16px;">
+                                <table role="presentation" width="173" height="44" cellpadding="0" cellspacing="0" border="0" style="width:173px; height:44px; border:1px solid #c3daff; border-radius:30px;">
+                                  <tbody><tr>
+                                    <td align="center" valign="middle" style="padding:10px 16px;">
+                                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                        <tbody><tr>
+                                          <td valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap;">
+                                            <a href="{{ .ReportURL }}" style="color:#0563ff; text-decoration:none;">VIEW FULL REPORT</a>
+                                          </td>
+                                          <td valign="middle" style="padding-left:8px; line-height:0;">
+                                            <a href="{{ .ReportURL }}" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
+                                          </td>
+                                        </tr></tbody>
+                                      </table>
+                                    </td>
+                                  </tr></tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+
+                        <!-- RIGHT column: 331px, three 109px cards, 8px apart -->
+                        <td class="stack tk-right" width="331" valign="top" style="width:331px;">
+                          <table role="presentation" class="full" width="331" cellpadding="0" cellspacing="0" border="0" style="width:331px;">
+                            <tbody>
+                              <tr>
+                                <td>
+                              <table role="presentation" class="full" width="331" height="109" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:331px; height:109px; background-color:#ffffff; border-radius:16px;">
+                                <tbody>
+                                  <tr>
+                                    <td valign="top" style="padding:26px 43px 26px 24px;">
+                                      <!-- icon 21 + 8 + title + 4 + chevron 14, all inline -->
+                                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                        <tbody><tr>
+                                          <td valign="middle" style="line-height:0;">
+                                            <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-action.png" width="21" height="21" alt="" style="display:block; width:21px; height:21px;">
+                                          </td>
+                                          <td valign="middle" style="padding-left:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:21px; letter-spacing:-0.8px; color:#000911; white-space:nowrap;">
+                                            Action required
+                                          </td>
+                                          <td valign="middle" style="padding-left:4px; line-height:0;">
+                                            <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-gray-right.png" width="14" height="14" alt="" style="display:block; width:14px; height:14px;">
+                                          </td>
+                                        </tr></tbody>
+                                      </table>
+                                      <!-- body: 264px measure, 4px below the header row -->
+                                      <div style="padding-top:4px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.72px; color:#434343;">
+                                      <!-- Text is the finding's own headline ("N of M appliance:
+                                           <count> detections from ..."), already self-numbered. Deliberately
+                                           NOT prefixed with Takeaway.Count (how many distinct issues exist
+                                           fleet-wide) any more -- that rendered as e.g. "3 1 of 1 appliance:
+                                           ...", two unrelated numbers glued together. -->
+                                        {{ .ActionRequired.Text }}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-top:8px;">
+                              <table role="presentation" class="full" width="331" height="109" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:331px; height:109px; background-color:#ffffff; border-radius:16px;">
+                                <tbody>
+                                  <tr>
+                                    <td valign="top" style="padding:26px 43px 26px 24px;">
+                                      <!-- icon 21 + 8 + title + 4 + chevron 14, all inline -->
+                                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                        <tbody><tr>
+                                          <td valign="middle" style="line-height:0;">
+                                            <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-watch.png" width="21" height="21" alt="" style="display:block; width:21px; height:21px;">
+                                          </td>
+                                          <td valign="middle" style="padding-left:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:21px; letter-spacing:-0.8px; color:#000911; white-space:nowrap;">
+                                            Watch item
+                                          </td>
+                                          <td valign="middle" style="padding-left:4px; line-height:0;">
+                                            <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-gray-right.png" width="14" height="14" alt="" style="display:block; width:14px; height:14px;">
+                                          </td>
+                                        </tr></tbody>
+                                      </table>
+                                      <!-- body: 264px measure, 4px below the header row -->
+                                      <div style="padding-top:4px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.72px; color:#434343;">
+                                      <!-- Text is the finding's own headline ("N of M appliance:
+                                           <count> detections from ..."), already self-numbered. Deliberately
+                                           NOT prefixed with Takeaway.Count (how many distinct issues exist
+                                           fleet-wide) any more -- that rendered as e.g. "3 1 of 1 appliance:
+                                           ...", two unrelated numbers glued together. -->
+                                        {{ .WatchItem.Text }}{{ if .WatchItem.Extra }}<br>Services targeted: <span style="font-weight:500; color:#a67d03;">{{ .WatchItem.Extra }}</span>{{ end }}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-top:8px;">
+                              <table role="presentation" class="full" width="331" height="109" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:331px; height:109px; background-color:#ffffff; border-radius:16px;">
+                                <tbody>
+                                  <tr>
+                                    <td valign="top" style="padding:26px 43px 26px 24px;">
+                                      <!-- icon 21 + 8 + title + 4 + chevron 14, all inline -->
+                                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                        <tbody><tr>
+                                          <td valign="middle" style="line-height:0;">
+                                            <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-working.png" width="21" height="21" alt="" style="display:block; width:21px; height:21px;">
+                                          </td>
+                                          <td valign="middle" style="padding-left:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:16px; line-height:21px; letter-spacing:-0.8px; color:#000911; white-space:nowrap;">
+                                            Working well
+                                          </td>
+                                          <td valign="middle" style="padding-left:4px; line-height:0;">
+                                            <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-gray-right.png" width="14" height="14" alt="" style="display:block; width:14px; height:14px;">
+                                          </td>
+                                        </tr></tbody>
+                                      </table>
+                                      <!-- body: 264px measure, 4px below the header row -->
+                                      <div style="padding-top:4px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.72px; color:#434343;">
+                                        {{ .WorkingWell }}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   CTA BAND
+                   ============================================================ -->
+              <tr>
+                <!-- Band is exactly 250px from padding + content (24 + 202 + 24); an
+                     explicit height would be a content-box height and add the padding
+                     on top of it, so it is deliberately omitted. -->
+                <td bgcolor="#eef4ff" align="center" valign="top" class="side-pad" style="background-color:#eef4ff; padding:34px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <!-- heading + body: 419px measure, 12px below the logo (y=65) -->
+                      <tr>
+                        <td align="center">
+                          <table role="presentation" class="full" width="419" cellpadding="0" cellspacing="0" border="0" align="center" style="width:419px; max-width:419px;">
+                            <tbody>
+                              <tr>
+                                <td align="center" style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#0563ff;">
+                                  Continuous protection for what matters
+                                </td>
+                              </tr>
+                              <tr>
+                                <td align="center" style="padding-top:7px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:16px; line-height:22px; letter-spacing:-0.64px; color:#3480ff;">
+                                  We monitor, detect, and block threats around the clock. so you can focus on your people, places, and peace of mind.
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <!-- sign-off at y=181 (34px below the text block), 2px between lines.
+                           rgba(5,99,255,0.5) pre-blended over #eef4ff -> #7aacff for Outlook -->
+                      <tr>
+                        <td class="serif-i" align="center" style="padding-top:34px; font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:16px; letter-spacing:-0.16px;">
+                          <div style="line-height:21px; color:#7aacff;">Thank you,</div>
+                          <div style="padding-top:2px; line-height:22px; color:#0563ff;">Astralink Connect Team</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- ============================================================
+                   FOOTER
+                   ============================================================ -->
+              <!-- Two bands, exactly as the design stacks them: a 246px blue band
+                   carrying the brand block, then a flat #1f1f1f 100px strip for the
+                   legal copy. Heights come from the padding chains rather than an
+                   explicit height, which would be a content-box height in email. -->
+
+              <!-- Blue band, 246px — one flat image, and the whole band is the link.
+                   It used to be live white text over footer-bg.png, which no
+                   dark-mode client renders correctly: the background is an
+                   image, so a client cannot recolour it, but it DOES recolour
+                   the text on top, and the white strapline and site link turned
+                   near-black on blue. Gmail's apps force that inversion on every
+                   message and honour neither the color-scheme meta nor
+                   prefers-color-scheme, so no CSS can opt out of it.
+                   footer-band.png has the logo, the strapline and the site line
+                   baked in at @2x (1280 x 492). Pixels are never inverted, so
+                   the band renders identically in every client and every theme.
+                   Same reasoning as the hero.
+                   The <a> wraps the image, so a click anywhere on the band goes
+                   to astralinkconnect.com; the alt text carries the copy for
+                   blocked images, and bgcolor holds the brand blue behind it. -->
+              <tr>
+                <td bgcolor="#173674" style="background-color:#173674; padding:0; margin:0; line-height:0; font-size:0;">
+                  <a href="https://astralinkconnect.com" style="display:block; text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/footer-band.png" width="640" height="246" alt="AstraLink Connect &mdash; Connect In Privacy&trade; &middot; Houston, Texas &middot; Visit astralinkconnect.com" style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:14px; line-height:20px; color:#ffffff;"></a>
+                </td>
+              </tr>
+
+              <!-- Legal strip, 100px (26+48+26 - the two 24px lines sit dead centre),
+                   547px measure. rgba(255,255,255,0.7) is pre-blended over #1f1f1f to
+                   #bcbcbc so Outlook, which drops rgba, does not render it pure white
+                   and lose the contrast against the links. -->
+              <tr>
+                <td bgcolor="#1f1f1f" align="center" class="side-pad legal-strip" style="background-color:#1f1f1f; padding:26px 34px;">
+                  <table role="presentation" class="full" width="547" cellpadding="0" cellspacing="0" border="0" align="center" style="width:547px; max-width:547px;">
+                    <tbody><tr>
+                      <td align="center" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:14px; line-height:24px; letter-spacing:-0.84px; color:#bcbcbc;">
+                        You received this because you subscribed to the AstraLink Connect brief.<br>
+                        <a href="{{ .UnsubscribeURL }}" style="color:#ffffff; text-decoration:underline;">Unsubscribe</a>
+                        <span style="color:#ffffff;">&nbsp;&middot;&nbsp;</span>
+                        <a href="https://www.astralinkconnect.com/legal/privacy-policy" style="color:#ffffff; text-decoration:underline;">Privacy</a>
+                      </td>
+                    </tr></tbody>
+                  </table>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          <!-- ============ /EMAIL CONTAINER ============ -->
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
