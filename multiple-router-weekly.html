@@ -51,7 +51,7 @@
     the @2x PNGs they were cut from.
 
       MARKUP                     FILE                          display  notes
-      hero (whole section)       weekly-hero.png               640x313  @4x, text baked in
+      hero (whole section)       weekly-hero.jpg               640x313  @4x, text baked in
       meta bar location          icon-location.png              16x16   #9BC1FF
       meta bar date              icon-calendar.png              16x16   #9BC1FF
       activity card 1            icon-threats.png               16x16   threat detections
@@ -64,7 +64,7 @@
       trend up (3, 4, 5)         icon-red-up.png                12x12   #EE0004
       fleet "VIEW FULL REPORT"   icon-right-arrow.png           16x16   #0563FF, on the tinted bar
       takeaway "VIEW FULL REPORT" icon-right-white-arrow.png          16x16   #FFFFFF, on the solid button *NEW*
-      footer band (whole band)   footer-band.png               640x246  @2x, text baked in
+      footer band (whole band)   footer-band.jpg               640x246  @2x, text baked in
 
     The four icons marked *NEW* are cut in this template for the first time.
     They live at ./assets/NAME.png (1x) and ./images/png/NAME@2x.png (2x),
@@ -77,7 +77,7 @@
     icon-gray-right: this layout's Key Takeaways block is a bar chart and three
     tables, not the status cards weekly.html and monthly.html use.
 
-    weekly-hero.png is 2 MB. It is fetched rather than inlined, so it does not
+    weekly-hero.jpg is 2 MB. It is fetched rather than inlined, so it does not
     count against the clipping threshold above, but it is still a slow first
     paint on mobile data. Re-exporting at @2x (1280 x 626) is worth doing.
 
@@ -301,7 +301,7 @@
                    ============================================================ -->
               <tr>
                 <td bgcolor="#0a1424" style="background-color:#0a1424; padding:0; margin:0; line-height:0; font-size:0;">
-                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/weekly-hero.png" width="640" height="313" alt="AstraLink Connect &mdash; Here&rsquo;s what protected your network this week. A short summary of what we stopped and what we&rsquo;re watching." style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:16px; line-height:22px; color:#ffffff;">
+                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/weekly-hero.jpg" width="640" height="313" alt="AstraLink Connect &mdash; Here&rsquo;s what protected your network this week. A short summary of what we stopped and what we&rsquo;re watching." style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:16px; line-height:22px; color:#ffffff;">
                 </td>
               </tr>
 
@@ -1240,7 +1240,7 @@
                    near-black on blue. Gmail's apps force that inversion on every
                    message and honour neither the color-scheme meta nor
                    prefers-color-scheme, so no CSS can opt out of it.
-                   footer-band.png has the logo, the strapline and the site line
+                   footer-band.jpg has the logo, the strapline and the site line
                    baked in at @2x (1280 x 492). Pixels are never inverted, so
                    the band renders identically in every client and every theme.
                    Same reasoning as the hero.
@@ -1249,7 +1249,7 @@
                    blocked images, and bgcolor holds the brand blue behind it. -->
               <tr>
                 <td bgcolor="#173674" style="background-color:#173674; padding:0; margin:0; line-height:0; font-size:0;">
-                  <a href="https://astralinkconnect.com" style="display:block; text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/footer-band.png" width="640" height="246" alt="AstraLink Connect &mdash; Connect In Privacy&trade; &middot; Houston, Texas &middot; Visit astralinkconnect.com" style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:14px; line-height:20px; color:#ffffff;"></a>
+                  <a href="https://astralinkconnect.com" style="display:block; text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/footer-band.jpg" width="640" height="246" alt="AstraLink Connect &mdash; Connect In Privacy&trade; &middot; Houston, Texas &middot; Visit astralinkconnect.com" style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:14px; line-height:20px; color:#ffffff;"></a>
                 </td>
               </tr>
 

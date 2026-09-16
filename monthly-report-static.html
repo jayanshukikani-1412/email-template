@@ -36,7 +36,7 @@
     the same filename and nothing here needs to change.
 
       MARKUP                     FILE                    display  notes
-      hero (whole section)       monthly-hero.png        640x313  @1x, text baked in
+      hero (whole section)       monthly-hero.jpg        640x313  @1x, text baked in
       meta bar location          icon-location.png        16x16
       meta bar date              icon-calendar.png        16x16
       stat card 1                icon-threats.png         16x16   threat detections
@@ -53,15 +53,15 @@
       takeaway chevrons (x3)     icon-gray-right.png      14x14   #8E8E8E
       "VIEW FULL REPORT" arrow   icon-right-arrow.png     16x16   #0563FF
       CTA band mark              logo-cta.png             30x29   white mark
-      footer band (whole band)   footer-band.png         640x246  @2x, text baked in
+      footer band (whole band)   footer-band.jpg         640x246  @2x, text baked in
 
     NOT USED — logo.png (85 x 24), footer-logo.png (70 x 72) and footer-bg.png
     (640 x 246). The hero and the footer band are each one flat image now, with
     the logos and copy baked in, so nothing references these three any more.
-    footer-band.png is footer-logo.png and the two text lines composited over
+    footer-band.jpg is footer-logo.png and the two text lines composited over
     footer-bg.png; keep those two as the source if the band needs re-cutting.
 
-    monthly-hero.png is a 640px @1x export, so it renders soft on retina, where
+    monthly-hero.jpg is a 640px @1x export, so it renders soft on retina, where
     the weekly hero ships at @4x. Re-export it at @2x (1280 x 626) to match.
 
     The filename "icon-detenctions.png" carries a typo in the assets folder. It
@@ -244,7 +244,7 @@
               <!-- ============================================================
                    HERO — a single flat image.
                    The logo, the heading and the serif sub-heading are all baked
-                   into monthly-hero.png, so there is no live text, no web font
+                   into monthly-hero.jpg, so there is no live text, no web font
                    and no VML fallback to keep in sync here. The export is 640 x
                    313 at @1x, so it is soft on retina; re-export at @2x when you can.
                    width:100% + height:auto lets it shrink with the container on
@@ -255,7 +255,7 @@
                    ============================================================ -->
               <tr>
                 <td bgcolor="#0a1424" style="background-color:#0a1424; padding:0; margin:0; line-height:0; font-size:0;">
-                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/monthly-hero.png" width="640" height="313" alt="AstraLink Connect &mdash; Here&rsquo;s what protected your network this month. A short summary of what we stopped and what we&rsquo;re watching." style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:16px; line-height:22px; color:#ffffff;">
+                  <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/monthly-hero.jpg" width="640" height="313" alt="AstraLink Connect &mdash; Here&rsquo;s what protected your network this month. A short summary of what we stopped and what we&rsquo;re watching." style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:16px; line-height:22px; color:#ffffff;">
                 </td>
               </tr>
 
@@ -891,7 +891,7 @@
                    near-black on blue. Gmail's apps force that inversion on every
                    message and honour neither the color-scheme meta nor
                    prefers-color-scheme, so no CSS can opt out of it.
-                   footer-band.png has the logo, the strapline and the site line
+                   footer-band.jpg has the logo, the strapline and the site line
                    baked in at @2x (1280 x 492). Pixels are never inverted, so
                    the band renders identically in every client and every theme.
                    Same reasoning as the hero.
@@ -900,7 +900,7 @@
                    blocked images, and bgcolor holds the brand blue behind it. -->
               <tr>
                 <td bgcolor="#173674" style="background-color:#173674; padding:0; margin:0; line-height:0; font-size:0;">
-                  <a href="https://astralinkconnect.com" style="display:block; text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/footer-band.png" width="640" height="246" alt="AstraLink Connect &mdash; Connect In Privacy&trade; &middot; Houston, Texas &middot; Visit astralinkconnect.com" style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:14px; line-height:20px; color:#ffffff;"></a>
+                  <a href="https://astralinkconnect.com" style="display:block; text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/footer-band.jpg" width="640" height="246" alt="AstraLink Connect &mdash; Connect In Privacy&trade; &middot; Houston, Texas &middot; Visit astralinkconnect.com" style="display:block; width:100%; max-width:640px; height:auto; border:0; outline:none; text-decoration:none; font-family:'DM Sans',Arial,sans-serif; font-size:14px; line-height:20px; color:#ffffff;"></a>
                 </td>
               </tr>
 
