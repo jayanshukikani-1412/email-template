@@ -35,9 +35,9 @@
 
     SIZE — READ BEFORE SENDING. Gmail clips a message body over ~102 KB, hiding
     everything past the cut behind a "View entire message" link. This file is
-    ~102 KB with two appliances, ~18 KB of it these comments, so it sits right
-    on the line as authored. Send the comment-stripped build (~83 KB); every
-    extra appliance then adds roughly 1.5 KB per table it appears in.
+    ~105 KB with two appliances, ~21 KB of it these comments, so as authored it
+    is already over. Send the comment-stripped build (~82 KB); every extra
+    appliance then adds roughly 1.5 KB per table it appears in.
     Strip PLAIN comments only — the three "[if mso]" / "[if !mso]" conditional
     blocks are load-bearing markup, and a blanket strip would take the Outlook
     serif fallback and the font stylesheet link with them.
@@ -60,7 +60,7 @@
       activity card 4            icon-wifi-connected.png       16x16   connections logged *NEW*
       activity card 5            icon-wifi-disconnected.png    16x16   connections refused *NEW*
       activity card 6            icon-traffic.png               16x16   total traffic observed
-      trend down (1, 2, 6)       icon-green-down.png            12x12   #04C023
+      trend down (2, 6)          icon-green-down.png            12x12   #04C023
       trend up (3, 4, 5)         icon-red-up.png                12x12   #EE0004
       fleet "VIEW FULL REPORT"   icon-right-arrow.png           16x16   #0563FF, on the tinted bar
       takeaway "VIEW FULL REPORT" icon-right-white-arrow.png          16x16   #FFFFFF, on the solid button *NEW*
@@ -95,7 +95,6 @@
 
       rgba(5,99,255,0.10) over #ffffff  -> #e6efff  activity card icon pill
       rgba(5,99,255,0.12) over #f6f6f6  -> #d9e4f7  fleet "VIEW FULL REPORT" bar
-      rgba(5,99,255,0.24) over #ffffff  -> #c3daff  takeaway button border
       rgba(0,9,17,0.30)   over #ffffff  -> #b3b5b8  every table column header
       rgba(238,0,4,0.05)  over #ffffff  -> #fef2f2  High pill
       rgba(122,89,0,0.05) over #ffffff  -> #f8f7f2  Medium pill
@@ -461,11 +460,8 @@
                            still carry the 12px and still run 7px long per card;
                            worth backporting.
 
-                           COPY NOTE: the trend caption reads "VS PREVIOUS WEEK"
-                           on all six cards. That is verbatim from the design
-                           (nodes 328:458, 477, 492, 507, 522, 540), which sets
-                           the monthly caption on a weekly report. Swap all six
-                           to "VS PREVIOUS WEEK" once the design is corrected.
+                           Card 1 carries a NEW badge where the other five carry
+                           a trend reading - see the note on that cell below.
                            ------------------------------------------------------ -->
                       <tr>
                         <td>
@@ -486,15 +482,19 @@
                                             </td></tr></tbody>
                                           </table>
                                         </td>
+                                        <!-- NEW badge (node 328:458) in place of a trend
+                                             reading: this metric has no prior week to
+                                             compare against. The 33px under it holds the
+                                             block at the 46px the trend pair occupies on
+                                             every other card, so the value and label below
+                                             still land on the design's y=115 and this card
+                                             stays in step with its two neighbours. -->
                                         <td valign="top" align="right" style="padding:16px 16px 0 0;">
                                           <table role="presentation" width="82" cellpadding="0" cellspacing="0" border="0" style="width:82px;">
                                             <tbody>
                                               <tr>
-                                                <td align="right" style="font-size:0; line-height:16px;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-green-down.png" width="12" height="12" alt="" style="display:inline-block; width:12px; height:12px; vertical-align:middle;"><span style="display:inline-block; padding-left:2px; vertical-align:middle; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; color:#04c023;">7%</span></td>
-                                              </tr>
-                                              <tr>
-                                                <td align="right" style="padding-top:4px; font-family:&#39;DM Sans&#39;,Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; color:#b3b5b8; text-align:right;">
-                                                  VS PREVIOUS WEEK
+                                                <td align="right" style="padding-bottom:33px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:11px; line-height:13px; text-transform:uppercase; color:#0563ff; text-align:right;">
+                                                  New
                                                 </td>
                                               </tr>
                                             </tbody>
@@ -717,17 +717,14 @@
                         <td style="padding-top:24px;">
                           <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#d9e4f7" style="width:572px; max-width:572px; background-color:#d9e4f7; border-radius:30px;">
                             <tbody><tr>
-                              <td align="center" valign="middle" style="padding:16px;">
-                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
-                                  <tbody><tr>
-                                    <td valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap;">
-                                      <a href="#" style="color:#0563ff; text-decoration:none;">VIEW FULL REPORT</a>
-                                    </td>
-                                    <td valign="middle" style="padding-left:8px; line-height:0;">
-                                      <a href="#" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
-                                    </td>
-                                  </tr></tbody>
-                                </table>
+                              <!-- The <a> IS the button: display:block makes it fill the cell and
+                                   the cell's padding moves onto it, so the whole pill is the hit
+                                   area rather than just the run of label text. The cell keeps no
+                                   padding of its own - the anchor supplies all of it, and padding
+                                   on a block-level anchor is what every client, Outlook included,
+                                   measures the click target from. -->
+                              <td align="center" valign="middle" style="padding:0;">
+                                <a href="#" style="display:block; padding:16px; text-align:center; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap; color:#0563ff; text-decoration:none;">VIEW FULL REPORT<img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-arrow.png" width="16" height="16" alt="" style="width:16px; height:16px; margin-left:8px; margin-top:3px; vertical-align:top; border:0;"></a>
                               </td>
                             </tr></tbody>
                           </table>
@@ -1019,25 +1016,22 @@
                         </td>
                       </tr>
 
-                      <!-- Solid button, right-aligned, 196 x 56 (16 + 22 + 16 plus
-                           the 1px border top and bottom). The border is
-                           rgba(5,99,255,0.24) pre-blended over white, the same
-                           #c3daff the weekly outline button uses. -->
+                      <!-- Solid button, right-aligned, 196 x 56. No stroke: the
+                           design dropped it, so the fill carries the shape on its
+                           own. The height attribute holds the 56 - the padding
+                           chain alone now comes to 54. -->
                       <tr>
                         <td align="right" style="padding-top:20px;">
-                          <table role="presentation" width="196" height="56" cellpadding="0" cellspacing="0" border="0" bgcolor="#0563ff" align="right" style="width:196px; height:56px; background-color:#0563ff; border:1px solid #c3daff; border-radius:30px;">
+                          <table role="presentation" width="196" height="56" cellpadding="0" cellspacing="0" border="0" bgcolor="#0563ff" align="right" style="width:196px; height:56px; background-color:#0563ff; border-radius:30px;">
                             <tbody><tr>
-                              <td align="center" valign="middle" style="padding:16px;">
-                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
-                                  <tbody><tr>
-                                    <td valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap;">
-                                      <a href="#" style="color:#ffffff; text-decoration:none;">VIEW FULL REPORT</a>
-                                    </td>
-                                    <td valign="middle" style="padding-left:8px; line-height:0;">
-                                      <a href="#" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-white-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
-                                    </td>
-                                  </tr></tbody>
-                                </table>
+                              <!-- The <a> IS the button: display:block makes it fill the cell and
+                                   the cell's padding moves onto it, so the whole pill is the hit
+                                   area rather than just the run of label text. The cell keeps no
+                                   padding of its own - the anchor supplies all of it, and padding
+                                   on a block-level anchor is what every client, Outlook included,
+                                   measures the click target from. -->
+                              <td align="center" valign="middle" style="padding:0;">
+                                <a href="#" style="display:block; padding:16px; text-align:center; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap; color:#ffffff; text-decoration:none;">VIEW FULL REPORT<img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-white-arrow.png" width="16" height="16" alt="" style="width:16px; height:16px; margin-left:8px; margin-top:3px; vertical-align:top; border:0;"></a>
                               </td>
                             </tr></tbody>
                           </table>

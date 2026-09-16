@@ -576,19 +576,15 @@
                                   <table role="presentation" class="full" width="185" height="197" cellpadding="0" cellspacing="0" border="0" bgcolor="#e9eef6" style="width:185px; height:197px; background-color:#e9eef6; border-radius:16px;">
                                     <tbody>
                                       <tr>
-                                        <td align="center" valign="middle" style="padding:16px;">
-                                          <div style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:14px; line-height:16px; text-transform:uppercase; white-space:nowrap;">
-                                            <a href="#" style="color:#0563ff; text-decoration:none;">View all reports</a>
-                                          </div>
-                                          <!-- align=center rather than margin:auto — Outlook ignores
-                                               auto margins on a block-level image -->
-                                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
-                                            <tbody><tr>
-                                              <td style="padding-top:4px; line-height:0;">
-                                                <a href="#" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-round-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
-                                              </td>
-                                            </tr></tbody>
-                                          </table>
+                                        <!-- The whole tile IS the link: the <a> is display:block and carries
+                                             the padding, so all 185x197 of the card is the hit area. The
+                                             vertical padding is the 16px frame plus the slack valign=middle
+                                             used to distribute (197 less the 36px of label + gap + arrow),
+                                             so the content still sits dead centre. text-align:center on the
+                                             anchor centres both lines - Outlook ignores auto margins on a
+                                             block-level image. -->
+                                        <td align="center" valign="middle" style="padding:0;">
+                                          <a href="#" style="display:block; padding:80.5px 16px; text-align:center; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:14px; line-height:16px; text-transform:uppercase; white-space:nowrap; color:#0563ff; text-decoration:none;">View all reports<br><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-round-arrow.png" width="16" height="16" alt="" style="width:16px; height:16px; margin-top:4px; vertical-align:top; border:0;"></a>
                                         </td>
                                       </tr>
                                     </tbody>
@@ -719,17 +715,14 @@
                               <td style="padding-top:16px;">
                                 <table role="presentation" width="173" height="44" cellpadding="0" cellspacing="0" border="0" style="width:173px; height:44px; border:1px solid #c3daff; border-radius:30px;">
                                   <tbody><tr>
-                                    <td align="center" valign="middle" style="padding:10px 16px;">
-                                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
-                                        <tbody><tr>
-                                          <td valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap;">
-                                            <a href="#" style="color:#0563ff; text-decoration:none;">VIEW FULL REPORT</a>
-                                          </td>
-                                          <td valign="middle" style="padding-left:8px; line-height:0;">
-                                            <a href="#" style="text-decoration:none;"><img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-arrow.png" width="16" height="16" alt="" style="display:block; width:16px; height:16px;"></a>
-                                          </td>
-                                        </tr></tbody>
-                                      </table>
+                                    <!-- The <a> IS the button: display:block makes it fill the cell and
+                                         the cell's padding moves onto it, so the whole pill is the hit
+                                         area rather than just the run of label text. The cell keeps no
+                                         padding of its own - the anchor supplies all of it, and padding
+                                         on a block-level anchor is what every client, Outlook included,
+                                         measures the click target from. -->
+                                    <td align="center" valign="middle" style="padding:0;">
+                                      <a href="#" style="display:block; padding:10px 16px; text-align:center; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:22px; letter-spacing:-0.72px; white-space:nowrap; color:#0563ff; text-decoration:none;">VIEW FULL REPORT<img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-right-arrow.png" width="16" height="16" alt="" style="width:16px; height:16px; margin-left:8px; margin-top:3px; vertical-align:top; border:0;"></a>
                                     </td>
                                   </tr></tbody>
                                 </table>
