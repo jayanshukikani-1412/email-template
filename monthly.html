@@ -39,6 +39,7 @@
       hero (whole section)       monthly-hero.jpg        640x313  @1x, text baked in
       meta bar location          icon-location.png        16x16
       meta bar date              icon-calendar.png        16x16
+      MAC badge                  icon-mac-address.png    12x12   #0563FF on #E6EFFF
       stat card 1                icon-threats.png         16x16   threat detections
       stat card 2                icon-domains.png         16x16   malicious domains
       stat card 3                icon-devices.png         16x16   devices on network
@@ -107,7 +108,7 @@
        still renders correctly. -->
   <!--[if !mso]><!-->
   <link rel="stylesheet" type="text/css"
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Instrument+Serif:ital@1&display=swap">
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Instrument+Serif:ital@1&display=swap">
   <!--<![endif]-->
   <style>
     /* ------------------------------------------------------------------
@@ -167,6 +168,14 @@
       /* Stat cards: horizontal 8px gap becomes a vertical one when stacked */
       .card-cell { display: block !important; width: 100% !important; padding-left: 0 !important; padding-top: 8px !important; }
       .card-cell-first { padding-top: 0 !important; }
+      /* ------------------------------------------------------------------
+         MAC badge (node 437:2370). On desktop it sits 8px to the right of the
+         section heading and the pair reads as one line. At 320px the 24px
+         heading needs the whole measure on its own, so .stack drops the badge
+         under it, the nowrap comes off the heading so it can break, and the
+         8px horizontal gap becomes a vertical one. ---------------------- */
+      .mac-head { white-space: normal !important; }
+      .mac-cell { padding-left: 0 !important; padding-top: 8px !important; }
       /* Key Takeaways: left copy block above the three cards */
       .tk-left { padding-top: 0 !important; }
       .tk-right { padding-top: 24px !important; }
@@ -222,6 +231,11 @@
   <!--[if mso]>
   <style>
     .serif-i { font-family: 'Times New Roman', Times, serif !important; font-style: italic !important; }
+    /* Same trap as the serif above: the Word engine takes the FIRST family
+       named, and on a miss drops to Times New Roman rather than walking the
+       stack - which would set the MAC address in a proportional serif. Courier
+       New is the monospace face Windows always has, so name it outright. */
+    .mono { font-family: 'Courier New', Courier, monospace !important; }
   </style>
   <![endif]-->
 </head>
@@ -333,8 +347,40 @@
                       <tr>
                         <!-- 31px line box + 4px, per the monthly design; the weekly layout
                              sets this pair 11px apart. -->
-                        <td style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911; padding-bottom:4px;">
-                          Detected, blocked, monitored
+                        <!-- Heading + MAC badge (node 437:2370). The badge is 8px to the
+                             RIGHT OF the heading text, not against the right edge, so the
+                             two sit in one shrink-to-fit table rather than a 100% one -
+                             an inner table with no width attribute wraps its content, and
+                             the heading cell's nowrap is what stops it collapsing to
+                             min-content and breaking mid-phrase. .stack/.full drop the
+                             badge under the heading on a phone. -->
+                        <td style="padding-bottom:4px;">
+                          <table role="presentation" class="full" cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                              <tr>
+                                <td class="stack mac-head" valign="middle" style="font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:24px; line-height:31px; letter-spacing:-1.2px; color:#000911; white-space:nowrap;">
+                                  Detected, blocked, monitored
+                                </td>
+                                <td class="stack mac-cell" valign="middle" style="padding-left:8px;">
+                                  <!-- 6 + 12 + 6 + 113 + 8 = 145px, the badge's width in the
+                                       design; 4px above and below the 16px line box makes its
+                                       24px height. The icon PNG carries the #e6efff ground
+                                       baked in and the cell repeats it, so the two never part
+                                       company in a client that blocks or rescales images. -->
+                                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#e6efff" style="background-color:#e6efff; border:1px solid #f0f5ff; border-radius:4px;">
+                                    <tbody><tr>
+                                      <td valign="middle" style="padding:4px 0 4px 6px; line-height:0; font-size:0;">
+                                        <img src="https://d12sb60thikcyd.cloudfront.net/static-assets/email/icon-mac-address.png" width="12" height="12" alt="" style="display:block; width:12px; height:12px; border:0;">
+                                      </td>
+                                      <td class="mono" valign="middle" style="padding:4px 8px 4px 6px; font-family:'DM Mono','Courier New',Courier,monospace; font-weight:400; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#0563ff;">
+                                        64:62:66:24:c0:8e
+                                      </td>
+                                    </tr></tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </td>
                       </tr>
                       <tr>

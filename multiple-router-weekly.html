@@ -31,13 +31,15 @@
 
       Fleet at a glance          three site counters + a 3 x 2 activity grid
       Key Takeaways              severity bar chart + High / Medium / Low tables
-      Every Appliance at a glance  per-appliance Condition and Security tables
+      Every Appliance at a glance  per-appliance Appliances info, Condition and
+                                 Security tables
 
     SIZE — READ BEFORE SENDING. Gmail clips a message body over ~102 KB, hiding
     everything past the cut behind a "View entire message" link. This file is
-    ~105 KB with two appliances, ~21 KB of it these comments, so as authored it
-    is already over. Send the comment-stripped build (~82 KB); every extra
-    appliance then adds roughly 1.5 KB per table it appears in.
+    ~111 KB with two appliances, ~22 KB of it these comments, so as authored it
+    is already over. Send the comment-stripped build (~86 KB); every extra
+    appliance then adds roughly 2.2 KB per table it appears in - three tables
+    now rather than two, since Appliances info was added.
     Strip PLAIN comments only — the three "[if mso]" / "[if !mso]" conditional
     blocks are load-bearing markup, and a blanket strip would take the Outlook
     serif fallback and the font stylesheet link with them.
@@ -190,19 +192,20 @@
       .card-cell { display: block !important; width: 100% !important; padding-left: 0 !important; padding-top: 8px !important; }
       .card-cell-first { padding-top: 0 !important; }
       /* ------------------------------------------------------------------
-         Every Appliance at a glance: five columns over a 540px measure do not
-         survive a 320px screen. Rather than scroll the card sideways - which
-         Gmail's apps do not honour - the type drops to 10px, the nowrap comes
-         off so "Bangalore Router[Old]" breaks over two lines, and the columns
-         are re-cut, and the desktop gutter narrows from 26-28px to 6px.
+         Every Appliance at a glance: Condition and Security put four columns
+         over a 540px measure, and Appliances info three. Neither survives a
+         320px screen at desktop sizing. Rather than scroll the card sideways -
+         which Gmail's apps do not honour - the type drops to 10px, the nowrap
+         comes off so "Bangalore Router[Old]" breaks over two lines, the columns
+         are re-cut, and the desktop gutter narrows from 48px to 6px.
 
-         What actually makes five columns fit is that the metric values break.
+         What actually makes the metric columns fit is that their values break.
          Each is a number, a space, then a span holding the arrow and its
          percentage glued with a &nbsp; - so "67.0% ▼ 22%" splits into "67.0%"
          over "▼ 22%" and the column only has to be as wide as the longer half.
          Desktop keeps it on one line through the inline white-space:nowrap,
-         which this block lifts. Without that break the five values need 264px
-         of the 268px a 320px screen leaves, and no gutter fits at all.
+         which this block lifts. Without that break the values need very nearly
+         the whole 268px a 320px screen leaves, and no gutter fits at all.
 
          The header is a step smaller than the values because "DETECTIONS" is
          one unbreakable word and sets the floor for its column; at 10px it
@@ -211,11 +214,18 @@
       .ap-pad  { padding-left: 6px !important; padding-right: 6px !important; }
       .ap-head { font-size: 9px !important; letter-spacing: -0.2px !important; white-space: normal !important; padding-right: 6px !important; }
       .ap-cell { font-size: 10px !important; letter-spacing: 0 !important; white-space: normal !important; padding-right: 6px !important; }
-      .ap-c1 { width: 23% !important; }
-      .ap-c2 { width: 20% !important; }
-      .ap-c3 { width: 22% !important; }
-      .ap-c4 { width: 17% !important; }
-      .ap-c5 { width: 18% !important; }
+      .ap-c1 { width: 28% !important; }
+      .ap-c2 { width: 25% !important; }
+      .ap-c3 { width: 23% !important; }
+      .ap-c4 { width: 24% !important; }
+      /* Appliances info is three columns, so it re-cuts them on its own. The
+         MAC address is the one value in this section with no break opportunity
+         anywhere in it - 17 characters of digits and colons, about 81px at 10px
+         in Arial, which is the face Gmail uses - so it takes the widest of the
+         three and the two that can wrap give the width up. */
+      .ai-c1 { width: 30% !important; }
+      .ai-c2 { width: 38% !important; }
+      .ai-c3 { width: 32% !important; }
       /* Key Takeaways tables: three columns, so there is room to keep these a
          step larger than the five-column cards above. The nowrap on the site
          and appliance columns comes off - "Bangalore Router[Old]" is 113px at
@@ -1043,24 +1053,32 @@
               </tr>
 
               <!-- ============================================================
-                   EVERY APPLIANCE AT A GLANCE — per-appliance Condition and
-                   Security tables (node 328:545).
+                   EVERY APPLIANCE AT A GLANCE — per-appliance Appliances info,
+                   Condition and Security tables (node 328:545).
 
-                   Both cards are one row per appliance, so a value that wraps
-                   grows the whole row and the five columns stay on a shared
+                   Appliances info (node 434:2137) names each appliance once,
+                   with its MAC address and site. Condition and Security used to
+                   repeat the site in a column of their own; the design now
+                   states it here instead and gives those two cards the width
+                   back, which is why they are four columns and not five.
+
+                   All three cards are one row per appliance, so a value that
+                   wraps grows the whole row and the columns stay on a shared
                    baseline. table-layout:fixed plus a colgroup is what holds
                    them: under the default auto layout the short values
                    shrink-wrap and drift off the design's stops. The percentages
                    ARE those stops over the 540px measure, so they survive the
-                   mobile reflow the .ap-* rules apply. Condition and Security
-                   carry slightly different stops, per the design.
+                   mobile reflow the .ap-* and .ai-* rules apply. Condition and
+                   Security now share one set of stops - 0 / 174.67 / 319.33 /
+                   460 - and Appliances info carries its own, 0 / 181.67 /
+                   326.23, per the design.
 
-                   Columns 1-4 carry a padding-right - 28px on Condition, 26px
-                   on Security - because those percentages span stop to stop,
-                   gutter included. Under table-layout:fixed the padding comes
-                   out of the column, so it lands each content box on the
-                   design's own width (126 / 52 / 96 / 85 and 126 / 52 / 83 /
-                   92) and guarantees the gutter. Without it a value could run
+                   Every column but the last carries a padding-right, because
+                   those percentages span stop to stop, gutter included. Under
+                   table-layout:fixed the padding comes out of the column, so it
+                   lands each content box on the design's own width (126 / 96 /
+                   92 / 80 on the metric cards, 126 / 96 / 80 on Appliances
+                   info) and guarantees the gutter. Without it a value could run
                    the full column and touch its neighbour wherever DM Sans is
                    missing and the wider fallback face is used - which is every
                    Gmail client.
@@ -1079,9 +1097,62 @@
                         </td>
                       </tr>
 
-                      <!-- CONDITION -->
+                      <!-- APPLIANCES INFO — the appliance's identity, stated once (node
+                           434:2137): its name, its MAC address and its site.
+                           Three stops over the 540px measure, 0 / 181.67 /
+                           326.23, so the gutters are 55.67px and 48.56px and
+                           the last column runs to the edge.
+
+                           The MAC address is set in DM Sans Light, not the
+                           badge's DM Mono - the design keeps this card in the
+                           same face as every other table on the page, and the
+                           column is wide enough that the digits do not need a
+                           monospace grid to line up. -->
                       <tr>
                         <td style="padding-bottom:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
+                          Appliances info
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table role="presentation" class="full" width="572" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:572px; max-width:572px; background-color:#ffffff; border-radius:8px;">
+                            <tbody><tr>
+                              <td class="ap-pad" style="padding:12px 16px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
+                                  <colgroup>
+                                    <col class="ai-c1" width="33.6%" style="width:33.6%;">
+                                    <col class="ai-c2" width="26.8%" style="width:26.8%;">
+                                    <col class="ai-c3" width="39.6%" style="width:39.6%;">
+                                  </colgroup>
+                                  <tbody>
+                                    <tr>
+                                      <td class="ap-head ai-c1" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                      <td class="ap-head ai-c2" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">MAC address</td>
+                                      <td class="ap-head ai-c3" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="ap-cell ai-c1" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                      <td class="ap-cell ai-c2" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">64:62:66:24:fd:fb</td>
+                                      <td class="ap-cell ai-c3" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore, India</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="ap-cell ai-c1" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                      <td class="ap-cell ai-c2" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">64:62:66:24:c0:8e</td>
+                                      <td class="ap-cell ai-c3" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Surat, India</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr></tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- CONDITION — 16px below the Appliances info card. Site has
+                           moved up into that card, so this is four stops, not
+                           five, and the gutter is a flat 48.67px throughout. -->
+                      <tr>
+                        <td style="padding-top:16px; padding-bottom:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
                           Condition
                         </td>
                       </tr>
@@ -1092,33 +1163,29 @@
                               <td class="ap-pad" style="padding:12px 16px;">
                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
                                   <colgroup>
-                                    <col class="ap-c1" width="28.7%" style="width:28.7%;">
-                                    <col class="ap-c2" width="15.0%" style="width:15.0%;">
-                                    <col class="ap-c3" width="23.1%" style="width:23.1%;">
-                                    <col class="ap-c4" width="21.1%" style="width:21.1%;">
-                                    <col class="ap-c5" width="12.1%" style="width:12.1%;">
+                                    <col class="ap-c1" width="32.3%" style="width:32.3%;">
+                                    <col class="ap-c2" width="26.8%" style="width:26.8%;">
+                                    <col class="ap-c3" width="26.1%" style="width:26.1%;">
+                                    <col class="ap-c4" width="14.8%" style="width:14.8%;">
                                   </colgroup>
                                   <tbody>
                                     <tr>
-                                      <td class="ap-head ap-c1" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
-                                      <td class="ap-head ap-c2" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
-                                      <td class="ap-head ap-c3" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Memory peak</td>
-                                      <td class="ap-head ap-c4" align="left" valign="top" style="padding-right:28px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">CPU typical</td>
-                                      <td class="ap-head ap-c5" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Storage</td>
+                                      <td class="ap-head ap-c1" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                      <td class="ap-head ap-c2" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Memory peak</td>
+                                      <td class="ap-head ap-c3" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">CPU typical</td>
+                                      <td class="ap-head ap-c4" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Storage</td>
                                     </tr>
                                     <tr>
-                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
-                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
-                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">67.0% <span style="color:#008a17;">&#9660;&nbsp;22%</span></td>
-                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:28px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">25.4% <span style="color:#8e8e8e;">&#8776;&nbsp;same</span></td>
-                                      <td class="ap-cell ap-c5" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">10.2% <span style="color:#ee0004;">&#9650;&nbsp;12%</span></td>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">67.0% <span style="color:#008a17;">&#9660;&nbsp;22%</span></td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">25.4% <span style="color:#8e8e8e;">&#8776;&nbsp;same</span></td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">10.2% <span style="color:#ee0004;">&#9650;&nbsp;12%</span></td>
                                     </tr>
                                     <tr>
-                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
-                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
-                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">69.7% <span style="color:#8e8e8e;">&#8776;&nbsp;same</span></td>
-                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:28px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">11.1% <span style="color:#ee0004;">&#9650;&nbsp;9%</span></td>
-                                      <td class="ap-cell ap-c5" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">7.0% <span style="color:#ee0004;">&#9650;&nbsp;15%</span></td>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">69.7% <span style="color:#8e8e8e;">&#8776;&nbsp;same</span></td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">11.1% <span style="color:#ee0004;">&#9650;&nbsp;9%</span></td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">7.0% <span style="color:#ee0004;">&#9650;&nbsp;15%</span></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -1128,8 +1195,8 @@
                         </td>
                       </tr>
 
-                      <!-- SECURITY — 16px below the Condition card. Its stops are
-                           slightly different from Condition's, per the design. -->
+                      <!-- SECURITY — 16px below the Condition card, and on the same
+                           four stops: the design no longer splits them. -->
                       <tr>
                         <td style="padding-top:16px; padding-bottom:8px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:16px; line-height:22px; letter-spacing:-0.96px; color:#434343;">
                           Security
@@ -1142,33 +1209,29 @@
                               <td class="ap-pad" style="padding:12px 16px;">
                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;">
                                   <colgroup>
-                                    <col class="ap-c1" width="28.3%" style="width:28.3%;">
-                                    <col class="ap-c2" width="14.6%" style="width:14.6%;">
-                                    <col class="ap-c3" width="20.3%" style="width:20.3%;">
-                                    <col class="ap-c4" width="22.0%" style="width:22.0%;">
-                                    <col class="ap-c5" width="14.8%" style="width:14.8%;">
+                                    <col class="ap-c1" width="32.3%" style="width:32.3%;">
+                                    <col class="ap-c2" width="26.8%" style="width:26.8%;">
+                                    <col class="ap-c3" width="26.1%" style="width:26.1%;">
+                                    <col class="ap-c4" width="14.8%" style="width:14.8%;">
                                   </colgroup>
                                   <tbody>
                                     <tr>
-                                      <td class="ap-head ap-c1" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
-                                      <td class="ap-head ap-c2" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Site</td>
-                                      <td class="ap-head ap-c3" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Detections</td>
-                                      <td class="ap-head ap-c4" align="left" valign="top" style="padding-right:26px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Most severe</td>
-                                      <td class="ap-head ap-c5" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Blocked %</td>
+                                      <td class="ap-head ap-c1" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Appliance</td>
+                                      <td class="ap-head ap-c2" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Detections</td>
+                                      <td class="ap-head ap-c3" align="left" valign="top" style="padding-right:48px; padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Most severe</td>
+                                      <td class="ap-head ap-c4" align="left" valign="top" style="padding-bottom:12px; font-family:'DM Sans',Arial,sans-serif; font-weight:400; font-size:14px; line-height:18px; text-transform:uppercase; white-space:nowrap; color:#b3b5b8;">Blocked %</td>
                                     </tr>
                                     <tr>
-                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
-                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
-                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">0 <span style="color:#008a17;">&#9660;&nbsp;100%</span></td>
-                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:26px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">0</td>
-                                      <td class="ap-cell ap-c5" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">7,717 <span style="color:#ee0004;">&#9650;&nbsp;58%</span></td>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[Old]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">0 <span style="color:#008a17;">&#9660;&nbsp;100%</span></td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:48px; padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">0</td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-bottom:10px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">7,717 <span style="color:#ee0004;">&#9650;&nbsp;58%</span></td>
                                     </tr>
                                     <tr>
-                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
-                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore</td>
-                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">1,220 <span style="color:#ee0004;">&#9650;&nbsp;311%</span></td>
-                                      <td class="ap-cell ap-c4" align="left" valign="top" style="padding-right:26px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">1 <span style="color:#ee0004;">&#9650;&nbsp;1%</span></td>
-                                      <td class="ap-cell ap-c5" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">257 <span style="color:#008a17;">&#9660;&nbsp;36%</span></td>
+                                      <td class="ap-cell ap-c1" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:500; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">Bangalore Router[New]</td>
+                                      <td class="ap-cell ap-c2" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">1,220 <span style="color:#ee0004;">&#9650;&nbsp;311%</span></td>
+                                      <td class="ap-cell ap-c3" align="left" valign="top" style="padding-right:48px; font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">1 <span style="color:#ee0004;">&#9650;&nbsp;1%</span></td>
+                                      <td class="ap-cell ap-c4" align="left" valign="top" style="font-family:'DM Sans',Arial,sans-serif; font-weight:300; font-size:12px; line-height:16px; letter-spacing:-0.6px; white-space:nowrap; color:#000911;">257 <span style="color:#008a17;">&#9660;&nbsp;36%</span></td>
                                     </tr>
                                   </tbody>
                                 </table>
